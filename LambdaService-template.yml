@@ -6,16 +6,15 @@ Parameters:
     Type: String
     Default: dev
 Resources:
-  GetExampleDataFunction:
+  ScheduleVirtualConsultationFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.GetExampleData
+      Handler: com.kenzie.capstone.service.lambda.ScheduleVirtualConsultationFunction
       Runtime: java11
-      Description: Get Example Data for given id
+      Description: Schedule a virtual consultation
       MemorySize: 512
       Timeout: 240
-      # Function's execution role
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
@@ -25,33 +24,80 @@ Resources:
         - AmazonDynamoDBFullAccess
       Tracing: Active
       Events:
-        UpdateResource:
+        ScheduleVirtualConsultation:
           Type: Api
           Properties:
-            Path: /example/{id}
-            Method: get
-  SetExampleDataFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.SetExampleData
-      Runtime: java11
-      Description: Set Example Data
-      MemorySize: 512
-      Timeout: 240
-      # Function's execution role
-      Policies:
-        - AWSLambdaBasicExecutionRole
-        - AWSLambda_ReadOnlyAccess
-        - AWSXrayWriteOnlyAccess
-        - AWSLambdaVPCAccessExecutionRole
-        - AmazonS3FullAccess
-        - AmazonDynamoDBFullAccess
-      Tracing: Active
-      Events:
-        UpdateResource:
-          Type: Api
-          Properties:
-            Path: /example/
+            Path: /appointments
             Method: post
 
+  ManageAppointmentScheduleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
+      Handler: com.kenzie.capstone.service.lambda.ManageAppointmentScheduleFunction
+      Runtime: java11
+      Description: Manage appointment schedule
+      MemorySize: 512
+      Timeout: 240
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+        - AmazonS3FullAccess
+        - AmazonDynamoDBFullAccess
+      Tracing: Active
+      Events:
+        ManageAppointmentSchedule:
+          Type: Api
+          Properties:
+            Path: /appointments
+            Method: get
+
+  ReceivePrescriptionRenewalsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
+      Handler: com.kenzie.capstone.service.lambda.ReceivePrescriptionRenewalsFunction
+      Runtime: java11
+      Description: Receive prescription renewals
+      MemorySize: 512
+      Timeout: 240
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+        - AmazonS3FullAccess
+        - AmazonDynamoDBFullAccess
+      Tracing: Active
+      Events:
+        ReceivePrescriptionRenewals:
+          Type: Api
+          Properties:
+            Path: /prescriptions
+            Method: post
+
+  MonitorElderlyParentsHealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
+      Handler: com.kenzie.capstone.service.lambda.MonitorElderlyParentsHealthFunction
+      Runtime: java11
+      Description: Monitor elderly parent's health
+      MemorySize: 512
+      Timeout: 240
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+        - AmazonS3FullAccess
+        - AmazonDynamoDBFullAccess
+      Tracing: Active
+      Events:
+        MonitorElderlyParentsHealth:
+          Type: Api
+          Properties:
+            Path: /health-monitoring
+            Method: get
