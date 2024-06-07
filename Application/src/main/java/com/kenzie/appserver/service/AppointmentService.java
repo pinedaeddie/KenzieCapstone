@@ -2,28 +2,46 @@ package com.kenzie.appserver.service;
 
 
 
+import com.kenzie.appserver.controller.model.AppointmentCreateRequest;
+import com.kenzie.appserver.controller.model.AppointmentResponse;
 import com.kenzie.appserver.repositories.AppointmentRepository;
-import com.kenzie.appserver.repositories.model.Appointment;
+import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AppointmentService {
 
     @Autowired
-    private AppointmentRepository appointmentRepository;
+    private final AppointmentRepository appointmentRepository;
 
-    public Appointment createAppointment(Appointment appointment) {
-        return appointmentRepository.save(appointment);
+    @Autowired
+    public AppointmentService(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
     }
 
-    public Optional<Appointment> getAppointmentById(String id) {
+    public AppointmentResponse createAppointment(AppointmentCreateRequest appointmentCreateRequest) {
+
+        AppointmentResponse response = new AppointmentResponse();
+        response.setAppointmentId(UUID.randomUUID().toString());
+        response.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
+        response.setPatientLastName(appointmentCreateRequest.getPatientLastName());
+        response.setProviderName(appointmentCreateRequest.getProviderName());
+        response.setAppointmentDate(appointmentCreateRequest.getAppointmentDateTime());
+
+        appointmentRepository.save(requestToRecord(appointmentCreateRequest));
+        return response;
+    }
+
+    public Optional<AppointmentRecord> getAppointmentById(String id) {
         return appointmentRepository.findById(id);
     }
 
-    public Iterable<Appointment> getAllAppointments() {
+    public Iterable<AppointmentRecord> getAllAppointments() {
         return appointmentRepository.findAll();
     }
 
@@ -31,7 +49,19 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
-    public Appointment updateAppointment(Appointment appointment) {
-        return appointmentRepository.save(appointment);
+    public AppointmentRecord updateAppointment(AppointmentRecord appointmentRecord) {
+        return appointmentRepository.save(appointmentRecord);
+    }
+
+
+    private AppointmentRecord requestToRecord (AppointmentCreateRequest appointmentCreateRequest){
+
+        AppointmentRecord record = new AppointmentRecord();
+        record.setAppointmentId(UUID.randomUUID().toString());
+        record.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
+        record.setPatientLastName(appointmentCreateRequest.getPatientLastName());
+        record.setProviderName(appointmentCreateRequest.getProviderName());
+        record.setAppointmentDate(appointmentCreateRequest.getAppointmentDateTime());
+        return record;
     }
 }

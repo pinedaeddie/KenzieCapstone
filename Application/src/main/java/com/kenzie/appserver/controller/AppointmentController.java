@@ -1,6 +1,8 @@
 package com.kenzie.appserver.controller;
 
-import com.kenzie.appserver.repositories.model.Appointment;
+import com.kenzie.appserver.controller.model.AppointmentCreateRequest;
+import com.kenzie.appserver.controller.model.AppointmentResponse;
+import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import com.kenzie.appserver.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,23 +13,27 @@ import org.springframework.web.bind.annotation.*;
 public class AppointmentController {
 
     @Autowired
-    private AppointmentService appointmentService;
+    private final AppointmentService appointmentService;
+
+    @Autowired
+    public AppointmentController(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
+    }
 
     @PostMapping
-    public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment) {
-        Appointment createdAppointment = appointmentService.createAppointment(appointment);
-        return ResponseEntity.ok(createdAppointment);
+    public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody AppointmentCreateRequest appointmentCreateRequest) {
+        return ResponseEntity.ok(appointmentService.createAppointment(appointmentCreateRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Appointment> getAppointmentById(@PathVariable String id) {
+    public ResponseEntity<AppointmentRecord> getAppointmentById(@PathVariable String id) {
         return appointmentService.getAppointmentById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Appointment>> getAllAppointments() {
+    public ResponseEntity<Iterable<AppointmentRecord>> getAllAppointments() {
         return ResponseEntity.ok(appointmentService.getAllAppointments());
     }
 
@@ -38,8 +44,8 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Appointment> updateAppointment(@PathVariable String id, @RequestBody Appointment appointment) {
-        appointment.setId(id);
-        return ResponseEntity.ok(appointmentService.updateAppointment(appointment));
+    public ResponseEntity<AppointmentRecord> updateAppointment(@PathVariable String id, @RequestBody AppointmentRecord appointmentRecord) {
+        //appointmentRecord.setId(id);
+        return ResponseEntity.ok(appointmentService.updateAppointment(appointmentRecord));
     }
 }
