@@ -1,6 +1,7 @@
 package com.kenzie.appserver.repositories.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import java.util.Objects;
 
 @DynamoDBTable(tableName = "Appointments")
 public class AppointmentRecord {
@@ -9,6 +10,7 @@ public class AppointmentRecord {
     private String patientLastName;
     private String providerName;
     private String appointmentDate;
+    private String appointmentTime;
 
 
     @DynamoDBHashKey(attributeName = "appointmentId")
@@ -54,5 +56,32 @@ public class AppointmentRecord {
 
     public void setAppointmentDate(String appointmentDate) {
         this.appointmentDate = appointmentDate;
+    }
+
+    @DynamoDBAttribute(attributeName = "appointmentTime")
+    public String getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(String appointmentTime) {
+        this.appointmentTime = appointmentTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        AppointmentRecord that = (AppointmentRecord) obj;
+        return Objects.equals(appointmentId, that.appointmentId) &&
+                Objects.equals(patientFirstName, that.patientFirstName) &&
+                Objects.equals(patientLastName, that.patientLastName) &&
+                Objects.equals(providerName, that.providerName) &&
+                Objects.equals(appointmentDate, that.appointmentDate) &&
+                Objects.equals(appointmentTime, that.appointmentTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(appointmentId, patientFirstName, patientLastName, providerName, appointmentDate, appointmentTime);
     }
 }

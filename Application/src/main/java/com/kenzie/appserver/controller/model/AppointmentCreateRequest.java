@@ -1,7 +1,7 @@
 package com.kenzie.appserver.controller.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -16,10 +16,16 @@ public class AppointmentCreateRequest {
     @NotEmpty
     @JsonProperty("providerName")
     private String providerName;
+
     @NotNull
-    @Future
-    @JsonProperty("appointmentDateTime")
-    private String appointmentDateTime;
+    @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonProperty("appointmentDate")
+    private String appointmentDate;
+
+    @NotNull
+    @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    @JsonProperty("appointmentTime")
+    private String appointmentTime;
 
 
     public String getPatientFirstName() {
@@ -46,11 +52,19 @@ public class AppointmentCreateRequest {
         this.providerName = providerName;
     }
 
-    public String getAppointmentDateTime() {
-        return appointmentDateTime;
+    public String getAppointmentDate() {
+        return appointmentDate;
     }
 
-    public void setAppointmentDateTime(String appointmentDateTime) {
-        this.appointmentDateTime = appointmentDateTime;
+    public void setAppointmentDate(String appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+    public String getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(String appointmentTime) {
+        this.appointmentTime = appointmentTime;
     }
 }

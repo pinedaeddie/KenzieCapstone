@@ -20,6 +20,10 @@ public class AppointmentResponse {
     @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty("appointmentDate")
     private String appointmentDate;
+    @NotNull
+    @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    @JsonProperty("appointmentTime")
+    private String appointmentTime;
 
     public String getAppointmentId() {
         return appointmentId;
@@ -59,5 +63,13 @@ public class AppointmentResponse {
 
     public void setAppointmentDate(String appointmentDate) {
         this.appointmentDate = appointmentDate;
+    }
+
+    public String getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(String appointmentTime) {
+        this.appointmentTime = appointmentTime;
     }
 }
