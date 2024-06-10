@@ -20,7 +20,6 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final LambdaServiceClient lambdaServiceClient;
 
-    @Autowired
     public AppointmentService(AppointmentRepository appointmentRepository, LambdaServiceClient lambdaServiceClient) {
         this.appointmentRepository = appointmentRepository;
         this.lambdaServiceClient = lambdaServiceClient;
