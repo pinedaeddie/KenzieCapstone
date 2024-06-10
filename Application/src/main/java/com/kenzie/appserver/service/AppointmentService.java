@@ -6,6 +6,7 @@ import com.kenzie.appserver.controller.model.AppointmentCreateRequest;
 import com.kenzie.appserver.controller.model.AppointmentResponse;
 import com.kenzie.appserver.repositories.AppointmentRepository;
 import com.kenzie.appserver.repositories.model.AppointmentRecord;
+import com.kenzie.capstone.service.client.LambdaServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,12 @@ import java.util.UUID;
 @Service
 public class AppointmentService {
 
-    @Autowired
     private final AppointmentRepository appointmentRepository;
+    private final LambdaServiceClient lambdaServiceClient;
 
-    @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, LambdaServiceClient lambdaServiceClient) {
         this.appointmentRepository = appointmentRepository;
+        this.lambdaServiceClient = lambdaServiceClient;
     }
 
     public AppointmentResponse createAppointment(AppointmentCreateRequest appointmentCreateRequest) {
