@@ -8,9 +8,9 @@ import com.kenzie.appserver.repositories.AppointmentRepository;
 import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,19 +27,38 @@ public class AppointmentService {
 
     public AppointmentResponse createAppointment(AppointmentCreateRequest appointmentCreateRequest) {
 
+        if (appointmentCreateRequest == null) {
+            throw new IllegalArgumentException("AppointmentCreateRequest cannot be null");
+        }
+
+        // Generating the appointmentId
+        String appointmentId = UUID.randomUUID().toString();
+
+        // Creating the AppointmentRecord and Set the appointmentId
+        AppointmentRecord record = fromRequestToRecord(appointmentCreateRequest);
+        record.setAppointmentId(appointmentId);
+
+        // Saving the record to the repository
+        appointmentRepository.save(record);
+
+        // Creating the response using the same appointmentId
         AppointmentResponse response = new AppointmentResponse();
-        response.setAppointmentId(UUID.randomUUID().toString());
+        response.setAppointmentId(appointmentId);
         response.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
         response.setPatientLastName(appointmentCreateRequest.getPatientLastName());
         response.setProviderName(appointmentCreateRequest.getProviderName());
-        response.setAppointmentDate(appointmentCreateRequest.getAppointmentDateTime());
+        response.setAppointmentDate(appointmentCreateRequest.getAppointmentDate());
+        response.setAppointmentTime(appointmentCreateRequest.getAppointmentTime());
 
-        appointmentRepository.save(requestToRecord(appointmentCreateRequest));
         return response;
     }
 
-    public Optional<AppointmentRecord> getAppointmentById(String id) {
-        return appointmentRepository.findById(id);
+    public Optional<AppointmentRecord> getAppointmentById(String appointmentId) {
+
+        if (appointmentId == null) {
+            throw new IllegalArgumentException("Appointment ID cannot be null");
+        }
+        return appointmentRepository.findById(appointmentId);
     }
 
     public Iterable<AppointmentRecord> getAllAppointments() {
@@ -47,22 +66,47 @@ public class AppointmentService {
     }
 
     public void deleteAppointmentById(String id) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("Appointment ID cannot be null");
+        }
         appointmentRepository.deleteById(id);
     }
 
-    public AppointmentRecord updateAppointment(AppointmentRecord appointmentRecord) {
-        return appointmentRepository.save(appointmentRecord);
+    public AppointmentRecord updateAppointment(String appointmentId, AppointmentCreateRequest appointmentCreateRequest) {
+
+        if (appointmentId == null) {
+            throw new IllegalArgumentException("Appointment ID cannot be null");
+        }
+
+        Optional<AppointmentRecord> optionalRecord = appointmentRepository.findById(appointmentId);
+
+        if (optionalRecord.isPresent()) {
+            AppointmentRecord record = optionalRecord.get();
+            record.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
+            record.setPatientLastName(appointmentCreateRequest.getPatientLastName());
+            record.setProviderName(appointmentCreateRequest.getProviderName());
+            record.setAppointmentDate(appointmentCreateRequest.getAppointmentDate());
+            record.setAppointmentTime(appointmentCreateRequest.getAppointmentTime());
+            return appointmentRepository.save(record);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id: " + appointmentId);
+        }
     }
 
 
-    private AppointmentRecord requestToRecord (AppointmentCreateRequest appointmentCreateRequest){
+    private AppointmentRecord fromRequestToRecord (AppointmentCreateRequest appointmentCreateRequest){
+
+        if (appointmentCreateRequest == null) {
+            throw new IllegalArgumentException("AppointmentCreateRequest cannot be null");
+        }
 
         AppointmentRecord record = new AppointmentRecord();
-        record.setAppointmentId(UUID.randomUUID().toString());
         record.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
         record.setPatientLastName(appointmentCreateRequest.getPatientLastName());
         record.setProviderName(appointmentCreateRequest.getProviderName());
-        record.setAppointmentDate(appointmentCreateRequest.getAppointmentDateTime());
+        record.setAppointmentDate(appointmentCreateRequest.getAppointmentDate());
+        record.setAppointmentTime(appointmentCreateRequest.getAppointmentTime());
         return record;
     }
 }

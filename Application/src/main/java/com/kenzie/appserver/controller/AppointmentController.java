@@ -44,8 +44,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AppointmentRecord> updateAppointment(@PathVariable String id, @RequestBody AppointmentRecord appointmentRecord) {
-        //appointmentRecord.setId(id);
-        return ResponseEntity.ok(appointmentService.updateAppointment(appointmentRecord));
+    public ResponseEntity<AppointmentRecord> updateAppointment(@PathVariable String id, @RequestBody AppointmentCreateRequest appointmentCreateRequest) {
+        return ResponseEntity.ok(appointmentService.updateAppointment(id, appointmentCreateRequest));
     }
 }
