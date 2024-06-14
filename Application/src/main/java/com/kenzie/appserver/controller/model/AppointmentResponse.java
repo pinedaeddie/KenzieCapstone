@@ -16,6 +16,8 @@ public class AppointmentResponse {
     private String patientLastName;
     @JsonProperty("providerName")
     private String providerName;
+    @JsonProperty("gender")
+    private String gender;
     @NotNull
     @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty("appointmentDate")
@@ -55,6 +57,14 @@ public class AppointmentResponse {
 
     public void setProviderName(String providerName) {
         this.providerName = providerName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getAppointmentDate() {
