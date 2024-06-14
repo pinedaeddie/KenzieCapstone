@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class LambdaServiceClientConfiguration {
 
     @Bean
-    public LambdaServiceClient referralServiceClient() {
+    public LambdaServiceClient lambdaServiceClient() {
         return new LambdaServiceClient();
     }
 }

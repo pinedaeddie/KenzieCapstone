@@ -9,6 +9,7 @@ public class AppointmentRecord {
     private String patientFirstName;
     private String patientLastName;
     private String providerName;
+    private String gender;
     private String appointmentDate;
     private String appointmentTime;
 
@@ -49,6 +50,12 @@ public class AppointmentRecord {
         this.providerName = providerName;
     }
 
+    @DynamoDBAttribute(attributeName = "gender")
+    public String getGender() { return gender;
+    }
+
+    public void setGender(String gender) { this.gender = gender;}
+
     @DynamoDBAttribute(attributeName = "appointmentDate")
     public String getAppointmentDate() {
         return appointmentDate;
@@ -68,20 +75,17 @@ public class AppointmentRecord {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        AppointmentRecord that = (AppointmentRecord) obj;
-        return Objects.equals(appointmentId, that.appointmentId) &&
-                Objects.equals(patientFirstName, that.patientFirstName) &&
-                Objects.equals(patientLastName, that.patientLastName) &&
-                Objects.equals(providerName, that.providerName) &&
-                Objects.equals(appointmentDate, that.appointmentDate) &&
-                Objects.equals(appointmentTime, that.appointmentTime);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AppointmentRecord)) return false;
+        AppointmentRecord record = (AppointmentRecord) o;
+        return Objects.equals(appointmentId, record.appointmentId) && Objects.equals(patientFirstName, record.patientFirstName)
+                && Objects.equals(patientLastName, record.patientLastName) && Objects.equals(providerName, record.providerName)
+                && Objects.equals(gender, record.gender) && Objects.equals(appointmentDate, record.appointmentDate) && Objects.equals(appointmentTime, record.appointmentTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(appointmentId, patientFirstName, patientLastName, providerName, appointmentDate, appointmentTime);
+        return Objects.hash(appointmentId, patientFirstName, patientLastName, providerName, gender, appointmentDate, appointmentTime);
     }
 }

@@ -6,13 +6,13 @@ Parameters:
     Type: String
     Default: dev
 Resources:
-  ScheduleVirtualConsultationFunction:
+  CreateBookingLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.ScheduleVirtualConsultationFunction
+      Handler: com.kenzie.capstone.service.lambda.CreateBookingLambda
       Runtime: java11
-      Description: Schedule a virtual consultation
+      Description: Create a booking
       MemorySize: 512
       Timeout: 240
       Policies:
@@ -27,16 +27,16 @@ Resources:
         ScheduleVirtualConsultation:
           Type: Api
           Properties:
-            Path: /appointments
+            Path: /booking/schedule
             Method: post
 
-  ManageAppointmentScheduleFunction:
+  GetBookingLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.ManageAppointmentScheduleFunction
+      Handler: com.kenzie.capstone.service.lambda.GetBookingLambda
       Runtime: java11
-      Description: Manage appointment schedule
+      Description: Get booking data
       MemorySize: 512
       Timeout: 240
       Policies:
@@ -51,40 +51,16 @@ Resources:
         ManageAppointmentSchedule:
           Type: Api
           Properties:
-            Path: /appointments
+            Path: /booking/{id}
             Method: get
 
-  ReceivePrescriptionRenewalsFunction:
+  UpdateBookingLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.ReceivePrescriptionRenewalsFunction
+      Handler: com.kenzie.capstone.service.lambda.UpdateBookingLambda
       Runtime: java11
-      Description: Receive prescription renewals
-      MemorySize: 512
-      Timeout: 240
-      Policies:
-        - AWSLambdaBasicExecutionRole
-        - AWSLambda_ReadOnlyAccess
-        - AWSXrayWriteOnlyAccess
-        - AWSLambdaVPCAccessExecutionRole
-        - AmazonS3FullAccess
-        - AmazonDynamoDBFullAccess
-      Tracing: Active
-      Events:
-        ReceivePrescriptionRenewals:
-          Type: Api
-          Properties:
-            Path: /prescriptions
-            Method: post
-
-  MonitorElderlyParentsHealthFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.MonitorElderlyParentsHealthFunction
-      Runtime: java11
-      Description: Monitor elderly parent's health
+      Description: Update booking information
       MemorySize: 512
       Timeout: 240
       Policies:
@@ -99,5 +75,29 @@ Resources:
         MonitorElderlyParentsHealth:
           Type: Api
           Properties:
-            Path: /health-monitoring
-            Method: get
+            Path: /booking/update
+            Method: post
+
+  DeleteBookingLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
+      Handler: com.kenzie.capstone.service.lambda.DeleteBookingLambda
+      Runtime: java11
+      Description: Delete a booking
+      MemorySize: 512
+      Timeout: 240
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+        - AmazonS3FullAccess
+        - AmazonDynamoDBFullAccess
+      Tracing: Active
+      Events:
+        ReceivePrescriptionRenewals:
+          Type: Api
+          Properties:
+            Path: /booking/delete/{id}
+            Method: post

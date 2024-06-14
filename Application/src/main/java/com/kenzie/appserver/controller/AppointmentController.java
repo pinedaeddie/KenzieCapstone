@@ -5,14 +5,15 @@ import com.kenzie.appserver.controller.model.AppointmentResponse;
 import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import com.kenzie.appserver.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/appointments")
 public class AppointmentController {
 
-    @Autowired
     private final AppointmentService appointmentService;
 
     @Autowired
@@ -22,29 +23,58 @@ public class AppointmentController {
 
     @PostMapping
     public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody AppointmentCreateRequest appointmentCreateRequest) {
-        return ResponseEntity.ok(appointmentService.createAppointment(appointmentCreateRequest));
+
+        try {
+            AppointmentResponse response = appointmentService.createAppointment(appointmentCreateRequest);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentRecord> getAppointmentById(@PathVariable String id) {
-        return appointmentService.getAppointmentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+        try {
+            return appointmentService.getAppointmentById(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @GetMapping
     public ResponseEntity<Iterable<AppointmentRecord>> getAllAppointments() {
-        return ResponseEntity.ok(appointmentService.getAllAppointments());
+
+        try {
+            return ResponseEntity.ok(appointmentService.getAllAppointments());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAppointmentById(@PathVariable String id) {
-        appointmentService.deleteAppointmentById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<AppointmentRecord> deleteAppointmentById(@PathVariable String id) {
+
+        try {
+            appointmentService.deleteAppointmentById(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentRecord> updateAppointment(@PathVariable String id, @RequestBody AppointmentCreateRequest appointmentCreateRequest) {
-        return ResponseEntity.ok(appointmentService.updateAppointment(id, appointmentCreateRequest));
+        try {
+            return ResponseEntity.ok(appointmentService.updateAppointment(id, appointmentCreateRequest));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update appointment", e);
+        }
     }
 }

@@ -13,8 +13,7 @@ public class CacheConfig {
     // Create a Cache here if needed
 
     @Bean
-    public CacheStore myCache() {
-//        return new CacheStore(120, TimeUnit.SECONDS);
-        return null;
+    public CacheStore cacheStore() {
+        return new CacheStore(120, TimeUnit.SECONDS);
     }
 }

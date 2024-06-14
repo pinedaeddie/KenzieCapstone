@@ -10,12 +10,18 @@ public class AppointmentCreateRequest {
     @NotEmpty
     @JsonProperty("patientFirstName")
     private String patientFirstName;
+
     @NotEmpty
     @JsonProperty("patientLastName")
     private String patientLastName;
+
     @NotEmpty
     @JsonProperty("providerName")
     private String providerName;
+
+    @NotEmpty
+    @JsonProperty("gender")
+    private String gender;
 
     @NotNull
     @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -50,6 +56,14 @@ public class AppointmentCreateRequest {
 
     public void setProviderName(String providerName) {
         this.providerName = providerName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getAppointmentDate() {

@@ -1,11 +1,10 @@
 package com.kenzie.capstone.service.dependency;
 
 import com.kenzie.capstone.service.LambdaService;
-import com.kenzie.capstone.service.dao.ExampleDao;
+import com.kenzie.capstone.service.dao.BookingDao;
 
 import dagger.Module;
 import dagger.Provides;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -14,12 +13,10 @@ import javax.inject.Singleton;
     includes = DaoModule.class
 )
 public class ServiceModule {
-
     @Singleton
     @Provides
     @Inject
-    public LambdaService provideLambdaService(@Named("ExampleDao") ExampleDao exampleDao) {
-        return new LambdaService(exampleDao);
+    public LambdaService provideLambdaService(@Named("BookingDao") BookingDao bookingDao) {
+        return new LambdaService(bookingDao);
     }
 }
-
