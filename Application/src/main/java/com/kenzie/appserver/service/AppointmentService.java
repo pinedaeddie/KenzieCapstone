@@ -1,5 +1,6 @@
 package com.kenzie.appserver.service;
 
+import com.kenzie.appserver.config.CacheStore;
 import com.kenzie.appserver.controller.model.AppointmentCreateRequest;
 import com.kenzie.appserver.controller.model.AppointmentResponse;
 import com.kenzie.appserver.repositories.AppointmentRepository;
@@ -9,18 +10,20 @@ import com.kenzie.capstone.service.model.BookingData;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
 
 @Service
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final LambdaServiceClient lambdaServiceClient;
+    private CacheStore cache;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, LambdaServiceClient lambdaServiceClient) {
+    public AppointmentService(AppointmentRepository appointmentRepository, LambdaServiceClient lambdaServiceClient, CacheStore cache) {
         this.appointmentRepository = appointmentRepository;
         this.lambdaServiceClient = lambdaServiceClient;
+        this.cache = cache;
     }
 
     public AppointmentResponse createAppointment(AppointmentCreateRequest appointmentCreateRequest) {
@@ -61,11 +64,31 @@ public class AppointmentService {
         if (appointmentId == null) {
             throw new IllegalArgumentException("Appointment ID cannot be null");
         }
-        return appointmentRepository.findById(appointmentId);
+
+        AppointmentRecord cachedRecord = cache.get(appointmentId);
+        if (cachedRecord != null) {
+            return Optional.ofNullable(cachedRecord);
+        }
+        AppointmentRecord recordFromBackendService = appointmentRepository
+                .findById(appointmentId)
+                .orElse(null);
+        if (recordFromBackendService != null) {
+            cache.add(recordFromBackendService.getAppointmentId(), recordFromBackendService);
+        }
+        return Optional.ofNullable(recordFromBackendService);
+
+
     }
 
-    public Iterable<AppointmentRecord> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public List<AppointmentRecord> getAllAppointments() {
+        ArrayList<AppointmentRecord> appointments = new ArrayList<>();
+
+        Iterable<AppointmentRecord> appointmentRecords = appointmentRepository.findAll();
+
+        while ((appointmentRecords.iterator().hasNext())){
+            appointments.add(appointmentRecords.iterator().next());
+        }
+        return appointments;
     }
 
     public void deleteAppointmentById(String id) {
@@ -75,7 +98,7 @@ public class AppointmentService {
             throw new IllegalArgumentException("Appointment ID cannot be null");
         }
         appointmentRepository.deleteById(id);
-
+        cache.evict(id);
         // Notifying the Lambda service about the appointment deletion
         lambdaServiceClient.deleteBooking(id);
     }
@@ -99,12 +122,15 @@ public class AppointmentService {
             record.setAppointmentTime(appointmentCreateRequest.getAppointmentTime());
             AppointmentRecord updatedRecord = appointmentRepository.save(record);
 
+            cache.evict(appointmentId);
+            cache.add(record.getAppointmentId(), record);
+
             // Notifying the Lambda service about the appointment update
             lambdaServiceClient.updateBooking(fromRecordToBookingData(updatedRecord));
 
             return updatedRecord;
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment not found with id: " + appointmentId);
+            throw new IllegalArgumentException( "Appointment not found with id: " + appointmentId);
         }
     }
 

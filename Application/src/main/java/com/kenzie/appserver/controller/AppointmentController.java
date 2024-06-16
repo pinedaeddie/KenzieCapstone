@@ -44,7 +44,7 @@ public class AppointmentController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Iterable<AppointmentRecord>> getAllAppointments() {
 
         try {
