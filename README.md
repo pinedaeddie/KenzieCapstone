@@ -13,6 +13,9 @@ You must do this for the ServiceLambda to work!
 
 ```
 aws cloudformation create-stack --stack-name lambda-table --template-body file://LambdaExampleTable.yml --capabilities CAPABILITY_IAM
+
+aws cloudformation create-stack --stack-name booking-table --template-body file://LambdaBookingTable.yml --capabilities CAPABILITY_IAM
+
 ```
 
 ### To deploy the Development Environment
