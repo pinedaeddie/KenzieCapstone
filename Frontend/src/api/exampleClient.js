@@ -10,11 +10,9 @@ import axios from 'axios'
  * https://javascript.info/mixins
  */
 export default class ExampleClient extends BaseClass {
-
     constructor(props = {}){
         super();
-        const methodsToBind = ['clientLoaded', 'getExample', 'createExample'];
-        this.bindClassMethods(methodsToBind, this);
+        const methodsToBind = ['clientLoaded', 'createAppointment', 'getAppointmentById', 'getAllAppointments', 'deleteAppointmentById', 'updateAppointment
         this.props = props;
         this.clientLoaded(axios);
     }
@@ -23,6 +21,7 @@ export default class ExampleClient extends BaseClass {
      * Run any functions that are supposed to be called once the client has loaded successfully.
      * @param client The client that has been successfully loaded.
      */
+
     clientLoaded(client) {
         this.client = client;
         if (this.props.hasOwnProperty("onReady")){
@@ -36,31 +35,77 @@ export default class ExampleClient extends BaseClass {
      * @param errorCallback (Optional) A function to execute if the call fails.
      * @returns The concert
      */
-    async getExample(id, errorCallback) {
+
+    async createAppointment(request, errorCallback) {
         try {
-            const response = await this.client.get(`/example/${id}`);
+            const response = await this.client.post(`/appointments`,
+                {
+                    patientFirstName: firstName,
+                    patientLastName: lastName,
+                    providerName: providerName,
+                    gender: gender,
+                    appointmentDate: appointmentDate,
+                    appointmentTime: appointmentTime
+                });
             return response.data;
         } catch (error) {
-            this.handleError("getExample", error, errorCallback)
+            this.handleError("startOrder", error, errorCallback);
         }
     }
 
-    async createExample(name, errorCallback) {
+    async getAppointmentById(appointmentId, errorCallback) {
         try {
-            const response = await this.client.post(`example`, {
-                name: name
+            const response = await this.client.get(`/appointments/${appointmentId}`);
+            return response.data;
+        } catch (error) {
+            this.handleError("getAppointmentById", error, errorCallback);
+        }
+    }
+
+    async getAllAppointments(errorCallback) {
+            try {
+                const response = await this.client.get(`/appointments/all`);
+                return response.data;
+            } catch (error) {
+                this.handleError("getAllAppointments", error, errorCallback);
+            }
+        }
+
+    async deleteAppointmentById(appointmentId, errorCallback) {
+           try {
+               const response = await this.client.delete(`/appointments/${appointmentId}`);
+               return response.data;
+           } catch (error) {
+               this.handleError("deleteAppointmentById", error, errorCallback);
+           }
+       }
+    async updateAppointment(appointmentId, request, errorCallback) {
+        try {
+            const response = await this.client.post(`/appointments/${appointmentId}`,
+            {
+                patientFirstName: firstName,
+                patientLastName: lastName,
+                providerName: providerName,
+                gender: gender,
+                appointmentDate: appointmentDate,
+                appointmentTime: appointmentTime
             });
             return response.data;
         } catch (error) {
-            this.handleError("createExample", error, errorCallback);
+            this.handleError("updateAppointment", error, errorCallback);
         }
     }
+
+
+
+
 
     /**
      * Helper method to log the error and run any error functions.
      * @param error The error received from the server.
      * @param errorCallback (Optional) A function to execute if the call fails.
      */
+
     handleError(method, error, errorCallback) {
         console.error(method + " failed - " + error);
         if (error.response.data.message !== undefined) {
