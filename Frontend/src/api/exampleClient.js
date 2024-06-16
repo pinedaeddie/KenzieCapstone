@@ -12,7 +12,7 @@ import axios from 'axios'
 export default class ExampleClient extends BaseClass {
     constructor(props = {}){
         super();
-        const methodsToBind = ['clientLoaded', 'createAppointment', 'getAppointmentById', 'getAllAppointments', 'deleteAppointmentById', 'updateAppointment
+        const methodsToBind = ['clientLoaded', 'createAppointment', 'getAppointmentById', 'getAllAppointments', 'deleteAppointmentById', 'updateAppointment'];
         this.props = props;
         this.clientLoaded(axios);
     }
@@ -49,13 +49,13 @@ export default class ExampleClient extends BaseClass {
                 });
             return response.data;
         } catch (error) {
-            this.handleError("startOrder", error, errorCallback);
+            this.handleError("createAppointment", error, errorCallback);
         }
     }
 
-    async getAppointmentById(appointmentId, errorCallback) {
+    async getAppointmentById(id, errorCallback) {
         try {
-            const response = await this.client.get(`/appointments/${appointmentId}`);
+            const response = await this.client.get(`/appointments/${id}`);
             return response.data;
         } catch (error) {
             this.handleError("getAppointmentById", error, errorCallback);
@@ -71,17 +71,18 @@ export default class ExampleClient extends BaseClass {
             }
         }
 
-    async deleteAppointmentById(appointmentId, errorCallback) {
+    async deleteAppointmentById(id, errorCallback) {
            try {
-               const response = await this.client.delete(`/appointments/${appointmentId}`);
+               const response = await this.client.delete(`/appointments/${id}`);
                return response.data;
            } catch (error) {
                this.handleError("deleteAppointmentById", error, errorCallback);
            }
        }
-    async updateAppointment(appointmentId, request, errorCallback) {
+
+    async updateAppointment(id, request, errorCallback) {
         try {
-            const response = await this.client.post(`/appointments/${appointmentId}`,
+            const response = await this.client.put(`/appointments/${id}`,
             {
                 patientFirstName: firstName,
                 patientLastName: lastName,

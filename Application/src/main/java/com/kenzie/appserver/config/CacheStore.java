@@ -4,9 +4,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.kenzie.appserver.repositories.model.AppointmentRecord;
-import com.kenzie.appserver.service.AppointmentService;
-import com.kenzie.appserver.service.model.Appointment;
-
 import java.util.concurrent.TimeUnit;
 
 public class CacheStore {

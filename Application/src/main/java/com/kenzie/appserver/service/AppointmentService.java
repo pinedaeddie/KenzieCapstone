@@ -7,9 +7,7 @@ import com.kenzie.appserver.repositories.AppointmentRepository;
 import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import com.kenzie.capstone.service.model.BookingData;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -18,7 +16,7 @@ public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final LambdaServiceClient lambdaServiceClient;
-    private CacheStore cache;
+    private final CacheStore cache;
 
     public AppointmentService(AppointmentRepository appointmentRepository, LambdaServiceClient lambdaServiceClient, CacheStore cache) {
         this.appointmentRepository = appointmentRepository;
@@ -67,7 +65,7 @@ public class AppointmentService {
 
         AppointmentRecord cachedRecord = cache.get(appointmentId);
         if (cachedRecord != null) {
-            return Optional.ofNullable(cachedRecord);
+            return Optional.of(cachedRecord);
         }
         AppointmentRecord recordFromBackendService = appointmentRepository
                 .findById(appointmentId)
@@ -81,8 +79,8 @@ public class AppointmentService {
     }
 
     public List<AppointmentRecord> getAllAppointments() {
-        ArrayList<AppointmentRecord> appointments = new ArrayList<>();
 
+        ArrayList<AppointmentRecord> appointments = new ArrayList<>();
         Iterable<AppointmentRecord> appointmentRecords = appointmentRepository.findAll();
 
         while ((appointmentRecords.iterator().hasNext())){
@@ -99,6 +97,7 @@ public class AppointmentService {
         }
         appointmentRepository.deleteById(id);
         cache.evict(id);
+
         // Notifying the Lambda service about the appointment deletion
         lambdaServiceClient.deleteBooking(id);
     }
