@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.kenzie.capstone.service.LambdaService;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.BookingData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,20 +27,21 @@ public class CreateBookingLambda implements RequestHandler<APIGatewayProxyReques
 
         ServiceComponent serviceComponent = DaggerServiceComponent.create();
         LambdaService lambdaService = serviceComponent.provideLambdaService();
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
 
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent().withHeaders(headers);
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
             BookingData request = gson.fromJson(input.getBody(), BookingData.class);
             lambdaService.saveBooking(request);
             String output = gson.toJson(request);
 
-            return response.withStatusCode(201).withBody(output);
-
-        } catch (Exception e) {
-            return response.withStatusCode(400).withBody(gson.toJson(e.getMessage()));
+            return response
+                    .withStatusCode(201)
+                    .withBody(gson.toJson(output));
+        } catch (InvalidDataException e) {
+            return response
+                    .withStatusCode(400)
+                    .withBody(gson.toJson(e.errorPayload()));
         }
     }
 }

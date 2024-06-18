@@ -40,12 +40,12 @@ export default class ExampleClient extends BaseClass {
         try {
             const response = await this.client.post(`/appointments`,
                 {
-                    patientFirstName: firstName,
-                    patientLastName: lastName,
-                    providerName: providerName,
-                    gender: gender,
-                    appointmentDate: appointmentDate,
-                    appointmentTime: appointmentTime
+                    patientFirstName: request,
+                    patientLastName: request,
+                    providerName: request,
+                    gender: request,
+                    appointmentDate: request,
+                    appointmentTime: request
                 });
             return response.data;
         } catch (error) {
@@ -84,12 +84,12 @@ export default class ExampleClient extends BaseClass {
         try {
             const response = await this.client.put(`/appointments/${id}`,
             {
-                patientFirstName: firstName,
-                patientLastName: lastName,
-                providerName: providerName,
-                gender: gender,
-                appointmentDate: appointmentDate,
-                appointmentTime: appointmentTime
+                patientFirstName: request,
+                patientLastName: request,
+                providerName: request,
+                gender: request,
+                appointmentDate: request,
+                appointmentTime: request
             });
             return response.data;
         } catch (error) {

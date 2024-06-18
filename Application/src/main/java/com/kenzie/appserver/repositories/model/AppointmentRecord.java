@@ -19,6 +19,7 @@ public class AppointmentRecord {
     public String getAppointmentId() {
         return appointmentId;
     }
+
     public void setAppointmentId(String appointmentId) {
         this.appointmentId = appointmentId;
     }
@@ -79,9 +80,8 @@ public class AppointmentRecord {
         if (this == o) return true;
         if (!(o instanceof AppointmentRecord)) return false;
         AppointmentRecord record = (AppointmentRecord) o;
-        return Objects.equals(appointmentId, record.appointmentId) && Objects.equals(patientFirstName, record.patientFirstName)
-                && Objects.equals(patientLastName, record.patientLastName) && Objects.equals(providerName, record.providerName)
-                && Objects.equals(gender, record.gender) && Objects.equals(appointmentDate, record.appointmentDate) && Objects.equals(appointmentTime, record.appointmentTime);
+        return Objects.equals(appointmentId, record.appointmentId) && Objects.equals(patientFirstName, record.patientFirstName) && Objects.equals(patientLastName, record.patientLastName) && Objects.equals(providerName, record.providerName) &&
+                Objects.equals(gender, record.gender) && Objects.equals(appointmentDate, record.appointmentDate) && Objects.equals(appointmentTime, record.appointmentTime);
     }
 
     @Override

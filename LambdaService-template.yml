@@ -27,7 +27,7 @@ Resources:
         ScheduleVirtualConsultation:
           Type: Api
           Properties:
-            Path: /booking/schedule
+            Path: /booking/create
             Method: post
 
   GetBookingLambdaFunction:
@@ -36,7 +36,7 @@ Resources:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
       Handler: com.kenzie.capstone.service.lambda.GetBookingLambda
       Runtime: java11
-      Description: Get booking data
+      Description: Get booking
       MemorySize: 512
       Timeout: 240
       Policies:
