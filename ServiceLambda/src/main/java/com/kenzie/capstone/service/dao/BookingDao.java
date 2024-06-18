@@ -19,7 +19,7 @@ public class BookingDao {
         return mapper.load(BookingRecord.class, id);
     }
 
-    public BookingRecord storeBookingData(BookingRecord bookingRecord) {
+    public void storeBookingData(BookingRecord bookingRecord) {
         try {
             mapper.save(bookingRecord, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
@@ -28,7 +28,6 @@ public class BookingDao {
         } catch (ConditionalCheckFailedException e) {
             throw new IllegalArgumentException("ID has already been used");
         }
-        return bookingRecord;
     }
 
     public BookingRecord updateBookingData(BookingRecord bookingRecord) {
@@ -44,9 +43,12 @@ public class BookingDao {
     }
 
     public boolean deleteBookingById(String id) {
-        BookingRecord bookingRecord = new BookingRecord();
-        bookingRecord.setId(id);
+        BookingRecord bookingRecord = mapper.load(BookingRecord.class, id);
+
+        if (bookingRecord == null) {
+            return false;
+        }
         mapper.delete(bookingRecord);
-        return false;
+        return true;
     }
 }

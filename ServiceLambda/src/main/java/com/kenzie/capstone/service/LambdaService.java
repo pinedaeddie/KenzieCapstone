@@ -4,10 +4,7 @@ import com.kenzie.capstone.service.dao.BookingDao;
 import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.BookingData;
 import com.kenzie.capstone.service.model.BookingRecord;
-
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 
 public class LambdaService {
@@ -47,14 +44,7 @@ public class LambdaService {
         bookingRecord.setId(bookingData.getId());
         bookingRecord.setPatientName(bookingData.getPatientName());
         bookingRecord.setProviderName(bookingData.getProviderName());
-
-        executor.submit(() -> {
-            try {
-                bookingDao.storeBookingData(bookingRecord);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to store booking data", e);
-            }
-        });
+        bookingDao.storeBookingData(bookingRecord);
     }
 
     public BookingRecord updateBooking(String id, BookingData bookingData) {
@@ -68,47 +58,16 @@ public class LambdaService {
         bookingRecord.setPatientName(bookingData.getPatientName());
         bookingRecord.setProviderName(bookingData.getProviderName());
 
-        try {
-            return executor.submit(() -> bookingDao.updateBookingData(bookingRecord)).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Failed to update booking", e);
-        }
+        return bookingDao.updateBookingData(bookingRecord);
     }
 
-    public boolean deleteBookings(List<String> bookingIds) {
-        boolean allDeleted = true;
+    public boolean deleteBookings(String bookingId) {
 
         // Checking if ID is null or empty
-        if (bookingIds == null || bookingIds.isEmpty()) {
+        if (bookingId == null || bookingId.isEmpty()) {
             throw new InvalidDataException("Request must contain a valid list of Booking IDs");
         }
 
-        List<Callable<Boolean>> tasks = new ArrayList<>();
-
-        for (String bookingId : bookingIds) {
-            if (bookingId == null || bookingId.isEmpty()) {
-                throw new InvalidDataException("Booking ID cannot be null or empty");
-            }
-
-            tasks.add(() -> bookingDao.deleteBookingById(bookingId));
-        }
-
-        ExecutorService executor = Executors.newFixedThreadPool(bookingIds.size());
-
-        try {
-            List<Future<Boolean>> results = executor.invokeAll(tasks);
-
-            for (Future<Boolean> result : results) {
-                if (!result.get()) {
-                    allDeleted = false;
-                }
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Error deleting bookings", e);
-        } finally {
-            executor.shutdown();
-        }
-
-        return allDeleted;
+        return bookingDao.deleteBookingById(bookingId);
     }
 }

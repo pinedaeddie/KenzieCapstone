@@ -8,7 +8,6 @@ import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import com.kenzie.capstone.service.model.BookingData;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -41,19 +40,9 @@ public class AppointmentService {
         appointmentRepository.save(record);
 
         // Notifying the Lambda service about the new appointment
-        lambdaServiceClient.scheduleBooking(fromRecordToBookingData(record));
+        lambdaServiceClient.createBooking(fromRecordToBookingData(record));
 
-        // Creating the response using the same appointmentId
-        AppointmentResponse response = new AppointmentResponse();
-        response.setAppointmentId(appointmentId);
-        response.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
-        response.setPatientLastName(appointmentCreateRequest.getPatientLastName());
-        response.setProviderName(appointmentCreateRequest.getProviderName());
-        response.setGender(appointmentCreateRequest.getGender());
-        response.setAppointmentDate(appointmentCreateRequest.getAppointmentDate());
-        response.setAppointmentTime(appointmentCreateRequest.getAppointmentTime());
-
-        return response;
+        return fromRecordToResponse(record);
     }
 
     public Optional<AppointmentRecord> getAppointmentById(String appointmentId) {
@@ -67,26 +56,22 @@ public class AppointmentService {
         if (cachedRecord != null) {
             return Optional.of(cachedRecord);
         }
+
         AppointmentRecord recordFromBackendService = appointmentRepository
                 .findById(appointmentId)
                 .orElse(null);
+
         if (recordFromBackendService != null) {
             cache.add(recordFromBackendService.getAppointmentId(), recordFromBackendService);
         }
+
+        // Notifying the Lambda service about the appointment
+        lambdaServiceClient.getBooking(appointmentId);
         return Optional.ofNullable(recordFromBackendService);
-
-
     }
 
-    public List<AppointmentRecord> getAllAppointments() {
-
-        ArrayList<AppointmentRecord> appointments = new ArrayList<>();
-        Iterable<AppointmentRecord> appointmentRecords = appointmentRepository.findAll();
-
-        while ((appointmentRecords.iterator().hasNext())){
-            appointments.add(appointmentRecords.iterator().next());
-        }
-        return appointments;
+    public Iterable<AppointmentRecord> getAllAppointments() {
+        return appointmentRepository.findAll();
     }
 
     public void deleteAppointmentById(String id) {
@@ -97,12 +82,11 @@ public class AppointmentService {
         }
         appointmentRepository.deleteById(id);
         cache.evict(id);
-
         // Notifying the Lambda service about the appointment deletion
         lambdaServiceClient.deleteBooking(id);
     }
 
-    public AppointmentRecord updateAppointment(String appointmentId, AppointmentCreateRequest appointmentCreateRequest) {
+    public AppointmentRecord updateAppointmentById(String appointmentId, AppointmentCreateRequest appointmentCreateRequest) {
 
         // Checking if ID is null
         if (appointmentId == null) {
@@ -119,8 +103,8 @@ public class AppointmentService {
             record.setGender(appointmentCreateRequest.getGender());
             record.setAppointmentDate(appointmentCreateRequest.getAppointmentDate());
             record.setAppointmentTime(appointmentCreateRequest.getAppointmentTime());
-            AppointmentRecord updatedRecord = appointmentRepository.save(record);
 
+            AppointmentRecord updatedRecord = appointmentRepository.save(record);
             cache.evict(appointmentId);
             cache.add(record.getAppointmentId(), record);
 
@@ -135,10 +119,6 @@ public class AppointmentService {
 
     private AppointmentRecord fromRequestToRecord(AppointmentCreateRequest appointmentCreateRequest) {
 
-        if (appointmentCreateRequest == null) {
-            throw new IllegalArgumentException("AppointmentCreateRequest cannot be null");
-        }
-
         AppointmentRecord record = new AppointmentRecord();
         record.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
         record.setPatientLastName(appointmentCreateRequest.getPatientLastName());
@@ -149,11 +129,20 @@ public class AppointmentService {
         return record;
     }
 
-    private BookingData fromRecordToBookingData(AppointmentRecord record) {
+    private AppointmentResponse fromRecordToResponse(AppointmentRecord record) {
 
-        if (record == null) {
-            throw new IllegalArgumentException("Record cannot be null");
-        }
+        AppointmentResponse response = new AppointmentResponse();
+        response.setAppointmentId(record.getAppointmentId());
+        response.setPatientFirstName(record.getPatientFirstName());
+        response.setPatientLastName(record.getPatientLastName());
+        response.setProviderName(record.getProviderName());
+        response.setGender(record.getGender());
+        response.setAppointmentDate(record.getAppointmentDate());
+        response.setAppointmentTime(record.getAppointmentTime());
+        return response;
+    }
+
+    private BookingData fromRecordToBookingData(AppointmentRecord record) {
 
         BookingData bookingData = new BookingData();
         bookingData.setId(record.getAppointmentId());

@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.kenzie.capstone.service.LambdaService;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
+import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,20 +26,22 @@ public class DeleteBookingLambda implements RequestHandler<APIGatewayProxyReques
         Gson gson = new GsonBuilder().create();
         log.info(gson.toJson(input));
 
+
         ServiceComponent serviceComponent = DaggerServiceComponent.create();
         LambdaService lambdaService = serviceComponent.provideLambdaService();
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
 
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent().withHeaders(headers);
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
             String bookingId = input.getPathParameters().get("id");
-            lambdaService.deleteBookings(Collections.singletonList(bookingId));
-            return response.withStatusCode(204);
-
-        } catch (Exception e) {
-            return response.withStatusCode(400).withBody(gson.toJson(e.getMessage()));
+            boolean allDeleted = lambdaService.deleteBookings(bookingId);
+            return response
+                    .withStatusCode(200)
+                    .withBody(gson.toJson(allDeleted));
+        } catch(InvalidDataException e){
+            return response
+                    .withStatusCode(400)
+                    .withBody(gson.toJson(e.errorPayload()));
         }
     }
 }
