@@ -5,6 +5,7 @@ import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.BookingData;
 import com.kenzie.capstone.service.model.BookingRecord;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.concurrent.*;
 
 public class LambdaService {
@@ -24,7 +25,6 @@ public class LambdaService {
 
     public BookingRecord getBookingData(String id) {
 
-        // Checking if ID is null or empty
         if (id == null || id.isEmpty()) {
             throw new InvalidDataException("Booking ID must be provided");
         }
@@ -34,36 +34,62 @@ public class LambdaService {
 
     public void saveBooking(BookingData bookingData) {
 
-        // Checking if ID is null or empty
         String bookingId = bookingData.getId();
+
         if (bookingId == null || bookingId.isEmpty()) {
             throw new InvalidDataException("Booking ID must be provided");
+        }
+        if (bookingData.getPatientName() == null) {
+            throw new InvalidDataException("Patient name must be provided");
+        }
+        if (bookingData.getProviderName() == null || bookingData.getProviderName().isEmpty()) {
+            throw new InvalidDataException("Provider name must be provided");
+        }
+        if (bookingData.getGender() == null || bookingData.getGender().isEmpty()) {
+            throw new InvalidDataException("Gender must be provided");
         }
 
         BookingRecord bookingRecord = new BookingRecord();
         bookingRecord.setId(bookingData.getId());
         bookingRecord.setPatientName(bookingData.getPatientName());
         bookingRecord.setProviderName(bookingData.getProviderName());
+        bookingRecord.setGender(bookingData.getGender());
+        bookingRecord.setReminderSent(false);
+        bookingRecord.setCreatedAt(LocalDateTime.now());
+        bookingRecord.setUpdatedAt(LocalDateTime.now());
+        bookingRecord.setBookingTime(bookingData.getBookingTime());
+
         bookingDao.storeBookingData(bookingRecord);
     }
 
     public BookingRecord updateBooking(String id, BookingData bookingData) {
 
-        // Checking if ID is null or empty
         if (id == null || id.isEmpty()) {
             throw new InvalidDataException("Request must contain a valid Customer ID");
         }
-        BookingRecord bookingRecord = new BookingRecord();
-        bookingRecord.setId(id);
+
+        if (bookingData.getPatientName() == null || bookingData.getPatientName().isEmpty()
+                || bookingData.getProviderName() == null || bookingData.getProviderName().isEmpty()) {
+            throw new InvalidDataException("Booking data must contain patient name and provider name");
+        }
+
+        BookingRecord bookingRecord = bookingDao.getBookingById(id);
+        if (bookingRecord == null) {
+            throw new InvalidDataException("Booking ID does not exist");
+        }
+
         bookingRecord.setPatientName(bookingData.getPatientName());
         bookingRecord.setProviderName(bookingData.getProviderName());
+        bookingRecord.setGender(bookingData.getGender());
+        bookingRecord.setReminderSent(bookingData.isReminderSent());
+        bookingRecord.setUpdatedAt(LocalDateTime.now());
+        bookingRecord.setBookingTime(bookingData.getBookingTime());
 
         return bookingDao.updateBookingData(bookingRecord);
     }
 
     public boolean deleteBookings(String bookingId) {
 
-        // Checking if ID is null or empty
         if (bookingId == null || bookingId.isEmpty()) {
             throw new InvalidDataException("Request must contain a valid list of Booking IDs");
         }

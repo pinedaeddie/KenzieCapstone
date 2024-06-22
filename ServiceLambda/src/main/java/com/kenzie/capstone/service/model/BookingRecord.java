@@ -3,6 +3,8 @@ package com.kenzie.capstone.service.model;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.kenzie.capstone.service.util.LocalDateTimeConverter;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -13,6 +15,7 @@ public class BookingRecord {
     private String bookingId;
     private String patientName;
     private String providerName;
+    private String gender;
     private String status;
     private boolean reminderSent;
     private LocalDateTime createdAt;
@@ -37,6 +40,33 @@ public class BookingRecord {
         this.bookingId = bookingId;
     }
 
+    @DynamoDBAttribute(attributeName = "patientName")
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    @DynamoDBAttribute(attributeName = "providerName")
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    @DynamoDBAttribute(attributeName = "gender")
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     @DynamoDBAttribute(attributeName = "status")
     public String getStatus() {
         return status;
@@ -56,6 +86,7 @@ public class BookingRecord {
     }
 
     @DynamoDBAttribute(attributeName = "createdAt")
+    @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -65,6 +96,7 @@ public class BookingRecord {
     }
 
     @DynamoDBAttribute(attributeName = "updatedAt")
+    @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -73,25 +105,8 @@ public class BookingRecord {
         this.updatedAt = updatedAt;
     }
 
-    @DynamoDBAttribute(attributeName = "patientName")
-    public String getPatientName() {
-        return patientName;
-    }
-
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
-    }
-
-    @DynamoDBAttribute(attributeName = "providerName")
-    public String getProviderName() {
-        return providerName;
-    }
-
-    public void setProviderName(String providerName) {
-        this.providerName = providerName;
-    }
-
     @DynamoDBAttribute(attributeName = "bookingTime")
+    @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
     public LocalDateTime getBookingTime() {
         return bookingTime;
     }
@@ -108,16 +123,33 @@ public class BookingRecord {
         return reminderSent == that.reminderSent &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(bookingId, that.bookingId) &&
+                Objects.equals(patientName, that.patientName) &&
+                Objects.equals(providerName, that.providerName) &&
+                Objects.equals(gender, that.gender) &&
                 Objects.equals(status, that.status) &&
                 Objects.equals(createdAt, that.createdAt) &&
                 Objects.equals(updatedAt, that.updatedAt) &&
-                Objects.equals(patientName, that.patientName) &&
-                Objects.equals(providerName, that.providerName) &&
                 Objects.equals(bookingTime, that.bookingTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookingId, status, reminderSent, createdAt, updatedAt, patientName, providerName, bookingTime);
+        return Objects.hash(id, bookingId, patientName, providerName, gender, status, reminderSent, createdAt, updatedAt, bookingTime);
+    }
+
+    @Override
+    public String toString() {
+        return "BookingRecord{" +
+                "id='" + id + '\'' +
+                ", bookingId='" + bookingId + '\'' +
+                ", patientName='" + patientName + '\'' +
+                ", providerName='" + providerName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", status='" + status + '\'' +
+                ", reminderSent=" + reminderSent +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", bookingTime=" + bookingTime +
+                '}';
     }
 }

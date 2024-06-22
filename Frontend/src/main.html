@@ -1,10 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <script type="text/javascript" src="mainPage.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediConnect</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-$END$
+
+<!-- header section starts-->
+<header class="header" id="header">
+    <a href="#" class="logo"> <i class="fa fa-shopping-cart"></i> Shopping</a>
+
+    <nav class="navbar">
+        <a class="active" href="#"><i class="fa fa-fw fa-home"></i> HOME</a>
+        <a href="https://www.snhu.edu/admission/academic-catalogs#/programs/HyG7Snbvt/none" target="_blank">ABOUT</a>
+        <a href="appointmentHistoryPage.html"><i class="fa fa-search"></i>VIEW APPOINTMENT HISTORY</a>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank"><i class="fa fa-fw fa-envelope"></i>CONTACT</a>
+    </nav>
+
+    <div class="icons">
+        <div class="fa fa-bars" id="menu-btn"></div>
+        <div class="fa fa-search" id="search-btn"></div>
+        <div class="fa fa-shopping-cart" id="cart-btn"></div>
+        <div class="fa fa-user" id="login-btn"></div>
+    </div>
+
+    <form class="search-form">
+        <input type="search" id="search-box" placeholder="Search...">
+        <label for="search-box" class="fa fa-search"></label>
+    </form>
+
+
+    <div class="shopping-cart"></div>
+
+
+    <form action="#" class="login-form">
+        <h3>Member Login</h3>
+        <input type="email" placeholder="Enter your email" class="box">
+        <input type="password" placeholder="Enter your password" class="box">
+
+        <p>Forgot password? <a href="#">Click Here</a></p>
+        <p>Not a member? <a href="#">Sign up now</a></p>
+
+        <input type="submit" value="Login" class="btn">
+    </form>
+</header>
+<!-- header section ends-->
+
+<!-- banner section starts-->
+<section class="home" id="home">
+    <div class="content">
+        <h3>Fresh And <span>Organic</span> Products For You</h3>
+        <p>Connecting Your Amazing Products and Service to the Right Customer..</p>
+        <p>Choose Delicacy for The Best Healthy Way to Life!</p>
+
+        <a href="scheduleAppointmentPage.html">Get Started</a>
+    </div>
+</section>
+<!-- banner section ends-->
+
+
+<!-- categories section starts-->
+<section class="categories" id="categories">
+    <h1 class="heading"><span>Product Categories</span></h1>
+
+    <div class="box-container">
+        <div class="box">
+            <img src="image/vegetable.png">
+            <h3>Vegetables</h3>
+            <a href="#">Shop Now</a>
+        </div>
+
+        <div class="box">
+            <img src="image/fruits.jpg">
+            <h3>Fresh Fruits</h3>
+            <a href="#">Shop Now</a>
+        </div>
+
+        <div class="box">
+            <img src="image/dairy.jpg">
+            <h3>Dairy Products</h3>
+            <a href="#">Shop Now</a>
+        </div>
+
+        <div class="box">
+            <img src="image/meat.jpeg">
+            <h3>Fresh Meats</h3>
+            <a href="#">Shop Now</a>
+        </div>
+    </div>
+</section>
+<!-- categories section ends-->
+
+
+<!-- features section starts-->
+<section class="features" id="features">
+    <h1 class="heading"><span>Our Features</span></h1>
+
+    <div class="box-container">
+        <div class="box">
+            <img src="image/mix.jpg">
+            <h3>Fresh and Organic</h3>
+            <p>Welcome to our grocery store! We're all about fresh and organic products that are good for you and the planet.
+                By choosing our fresh and organic products, you're not only choosing healthier options for yourself,
+                but you're also supporting sustainable farming practices that care for the environment.</p>
+
+            <a href="#" >Read More</a>
+        </div>
+
+        <div class="box">
+            <img src="image/delivery.jpg">
+            <h3>Free Delivery</h3>
+            <p>We're pleased to offer free delivery on all orders.
+                Simply browse our selection, add your items to the cart, and enjoy the convenience of having your groceries delivered straight to your door at no additional cost.
+                Start shopping now and take advantage of our free delivery service!</p>
+
+            <a href="#" class="btn">Read More</a>
+        </div>
+
+        <div class="box">
+            <img src="image/payment.jpg">
+            <h3>Easy Payments</h3>
+            <p>We offer simple payment options, so you can shop with ease.
+                Pay with your preferred method - whether it's credit/debit cards, or other secure gateways.
+                With our easy payment options, you can complete your purchase quickly, so you can spend less time at the checkout and more time enjoying your groceries. </p>
+
+            <a href="#" class="btn">Read More</a>
+        </div>
+    </div>
+</section>
+<!-- features section ends-->
+
+
+
+<!-- footer section starts-->
+<section class="footer">
+    <div class="box-container">
+        <div class="box">
+            <h3> MediConnect <i class="fa fa-shopping-basket"></i></h3>
+            <p>Feel Free To Follow Us On Our Social Media Handlers All The Links Are Given Below.</p>
+
+            <div class="share">
+                <a href="#" class="fa fa-facebook"></a>
+                <a href="#" class="fa fa-instagram"></a>
+                <a href="#" class="fa fa-twitter"></a>
+                <a href="#" class="fa fa-linkedin"></a>
+            </div>
+        </div>
+
+        <div class="box">
+            <h3>Contact Info</h3>
+            <a href="#" class="links"> <i class="fa fa-phone"></i> +91 99990000</a>
+            <a href="#" class="links"> <i class="fa fa-envelope"></i> info@example.com</a>
+            <a href="#" class="links"> <i class="fa fa-map-marker"></i> The United States of America, USA</a>
+        </div>
+
+        <div class="box">
+            <h3>Newsletter</h3>
+            <p>Subscribe For Latest Updates</p>
+            <input type="email" placeholder="Enter your email" class="email">
+            <input type="submit" value="Subscribe" class="btn">
+        </div>
+    </div>
+
+    <div class="credit">Created By <span>MediConnect</span> | All Rights Reserved</div>
+</section>
+<!-- footer section ends-->
+
 </body>
 </html>

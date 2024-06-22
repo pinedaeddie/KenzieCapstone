@@ -9,7 +9,7 @@ import axios from 'axios'
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#Mix-ins
  * https://javascript.info/mixins
  */
-export default class ExampleClient extends BaseClass {
+export default class AppointmentClient extends BaseClass {
     constructor(props = {}){
         super();
         const methodsToBind = ['clientLoaded', 'createAppointment', 'getAppointmentById', 'getAllAppointments', 'updateAppointmentById', 'deleteAppointmentById'];
@@ -29,13 +29,6 @@ export default class ExampleClient extends BaseClass {
             this.props.onReady();
         }
     }
-
-    /**
-     * Gets the concert for the given ID.
-     * @param id Unique identifier for a concert
-     * @param errorCallback (Optional) A function to execute if the call fails.
-     * @returns The concert
-     */
 
     async createAppointment(request, errorCallback) {
         try {
@@ -72,7 +65,7 @@ export default class ExampleClient extends BaseClass {
             }
         }
 
-    async updateAppointment(id, request, errorCallback) {
+    async updateAppointmentById(id, request, errorCallback) {
         try {
             const response = await this.client.put(`/appointments/${id}`,
                 {
@@ -87,7 +80,7 @@ export default class ExampleClient extends BaseClass {
         } catch (error) {
             this.handleError("updateAppointmentById", error, errorCallback);
         }
-
+    }
 
     async deleteAppointmentById(id, errorCallback) {
            try {
@@ -97,8 +90,6 @@ export default class ExampleClient extends BaseClass {
                this.handleError("deleteAppointmentById", error, errorCallback);
            }
        }
-    }
-
 
 
 

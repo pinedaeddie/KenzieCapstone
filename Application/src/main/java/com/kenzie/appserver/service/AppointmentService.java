@@ -45,50 +45,39 @@ public class AppointmentService {
         return fromRecordToResponse(record);
     }
 
-    public Optional<AppointmentRecord> getAppointmentById(String appointmentId) {
+    public AppointmentResponse getAppointmentById(String id) {
 
-        // Checking if ID is null
-        if (appointmentId == null) {
+        if (id == null) {
             throw new IllegalArgumentException("Appointment ID cannot be null");
         }
 
-        AppointmentRecord cachedRecord = cache.get(appointmentId);
+        AppointmentRecord cachedRecord = cache.get(id);
         if (cachedRecord != null) {
-            return Optional.of(cachedRecord);
+            return fromRecordToResponse(cachedRecord);
         }
 
         AppointmentRecord recordFromBackendService = appointmentRepository
-                .findById(appointmentId)
+                .findById(id)
                 .orElse(null);
+
+        AppointmentResponse response = null;
 
         if (recordFromBackendService != null) {
             cache.add(recordFromBackendService.getAppointmentId(), recordFromBackendService);
+            response = fromRecordToResponse(recordFromBackendService);
         }
 
         // Notifying the Lambda service about the appointment
-        lambdaServiceClient.getBooking(appointmentId);
-        return Optional.ofNullable(recordFromBackendService);
+        lambdaServiceClient.getBooking(id);
+        return response;
     }
 
     public Iterable<AppointmentRecord> getAllAppointments() {
         return appointmentRepository.findAll();
     }
 
-    public void deleteAppointmentById(String id) {
-
-        // Checking if ID is null
-        if (id == null) {
-            throw new IllegalArgumentException("Appointment ID cannot be null");
-        }
-        appointmentRepository.deleteById(id);
-        cache.evict(id);
-        // Notifying the Lambda service about the appointment deletion
-        lambdaServiceClient.deleteBooking(id);
-    }
-
     public AppointmentRecord updateAppointmentById(String appointmentId, AppointmentCreateRequest appointmentCreateRequest) {
 
-        // Checking if ID is null
         if (appointmentId == null) {
             throw new IllegalArgumentException("Appointment ID cannot be null");
         }
@@ -116,6 +105,34 @@ public class AppointmentService {
             throw new IllegalArgumentException( "Appointment not found with id: " + appointmentId);
         }
     }
+
+    public AppointmentRecord deleteAppointmentById(String id) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("Appointment ID cannot be null");
+        }
+
+        // Retrieving the record before deletion
+        AppointmentRecord deletedRecord = appointmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Appointment not found for ID: " + id));
+
+        // Deleting the record
+        appointmentRepository.deleteById(id);
+        cache.evict(id);
+
+        // Notifying the Lambda service about the appointment deletion
+        boolean deletionResult = lambdaServiceClient.deleteBooking(id);
+        if (!deletionResult) {
+            throw new RuntimeException("Failed to delete booking in Lambda service");
+        }
+
+        return deletedRecord;
+    }
+
+
+    /**  ------------------------------------------------------------------------
+     *   Private Methods
+     *   ------------------------------------------------------------------------ **/
 
     private AppointmentRecord fromRequestToRecord(AppointmentCreateRequest appointmentCreateRequest) {
 
