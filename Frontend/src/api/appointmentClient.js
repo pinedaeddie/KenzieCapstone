@@ -12,7 +12,8 @@ import axios from 'axios'
 export default class ExampleClient extends BaseClass {
     constructor(props = {}){
         super();
-        const methodsToBind = ['clientLoaded', 'createAppointment', 'getAppointmentById', 'getAllAppointments', 'deleteAppointmentById', 'updateAppointment'];
+        const methodsToBind = ['clientLoaded', 'createAppointment', 'getAppointmentById', 'getAllAppointments', 'updateAppointmentById', 'deleteAppointmentById'];
+        this.bindClassMethods(methodsToBind, this);
         this.props = props;
         this.clientLoaded(axios);
     }
@@ -40,12 +41,12 @@ export default class ExampleClient extends BaseClass {
         try {
             const response = await this.client.post(`/appointments`,
                 {
-                    patientFirstName: request,
-                    patientLastName: request,
-                    providerName: request,
-                    gender: request,
-                    appointmentDate: request,
-                    appointmentTime: request
+                    patientFirstName: request.patientFirstName,
+                    patientLastName: request.patientLastName,
+                    providerName: request.providerName,
+                    gender: request.gender,
+                    appointmentDate: request.appointmentDate,
+                    appointmentTime: request.appointmentTime
                 });
             return response.data;
         } catch (error) {
@@ -71,6 +72,23 @@ export default class ExampleClient extends BaseClass {
             }
         }
 
+    async updateAppointment(id, request, errorCallback) {
+        try {
+            const response = await this.client.put(`/appointments/${id}`,
+                {
+                    patientFirstName: request.patientFirstName,
+                    patientLastName: request.patientLastName,
+                    providerName: request.providerName,
+                    gender: request.gender,
+                    appointmentDate: request.appointmentDate,
+                    appointmentTime: request.appointmentTime
+                });
+            return response.data;
+        } catch (error) {
+            this.handleError("updateAppointmentById", error, errorCallback);
+        }
+
+
     async deleteAppointmentById(id, errorCallback) {
            try {
                const response = await this.client.delete(`/appointments/${id}`);
@@ -79,22 +97,6 @@ export default class ExampleClient extends BaseClass {
                this.handleError("deleteAppointmentById", error, errorCallback);
            }
        }
-
-    async updateAppointment(id, request, errorCallback) {
-        try {
-            const response = await this.client.put(`/appointments/${id}`,
-            {
-                patientFirstName: request,
-                patientLastName: request,
-                providerName: request,
-                gender: request,
-                appointmentDate: request,
-                appointmentTime: request
-            });
-            return response.data;
-        } catch (error) {
-            this.handleError("updateAppointment", error, errorCallback);
-        }
     }
 
 
