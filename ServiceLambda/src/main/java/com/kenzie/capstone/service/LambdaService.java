@@ -51,6 +51,7 @@ public class LambdaService {
 
         BookingRecord bookingRecord = new BookingRecord();
         bookingRecord.setId(bookingData.getId());
+        bookingRecord.setBookingId(bookingData.getBookingId());
         bookingRecord.setPatientName(bookingData.getPatientName());
         bookingRecord.setProviderName(bookingData.getProviderName());
         bookingRecord.setGender(bookingData.getGender());
@@ -78,6 +79,8 @@ public class LambdaService {
             throw new InvalidDataException("Booking ID does not exist");
         }
 
+        bookingRecord.setId(bookingData.getId());
+        bookingRecord.setBookingId(bookingData.getBookingId());
         bookingRecord.setPatientName(bookingData.getPatientName());
         bookingRecord.setProviderName(bookingData.getProviderName());
         bookingRecord.setGender(bookingData.getGender());

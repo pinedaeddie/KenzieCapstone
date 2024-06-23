@@ -13,7 +13,7 @@ module.exports = {
     updateAppointmentPage: path.resolve(__dirname, 'src', 'pages', 'updateAppointmentPage.js'),
     deleteAppointmentPage: path.resolve(__dirname, 'src', 'pages', 'deleteAppointmentPage.js'),
     appointmentHistoryPage: path.resolve(__dirname, 'src', 'pages', 'appointmentHistoryPage.js'),
-    //examplePage: path.resolve(__dirname, 'src', 'pages', 'examplePage.js'),
+//    //examplePage: path.resolve(__dirname, 'src', 'pages', 'examplePage.js'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -38,11 +38,11 @@ module.exports = {
       filename: 'main.html',
       inject: false
     }),
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-      filename: 'index.html',
-      inject: false
-    }),
+//    new HtmlWebpackPlugin({
+//      template: './src/index.html',
+//      filename: 'index.html',
+//      inject: false
+//    }),
     new CopyPlugin({
       patterns: [
         {
@@ -51,14 +51,14 @@ module.exports = {
         }
       ]
     }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.resolve('src/image'),
-          to: path.resolve("dist/image")
-        }
-      ]
-    }),
+//    new CopyPlugin({
+//      patterns: [
+//        {
+//          from: path.resolve('src/image'),
+//          to: path.resolve("dist/image")
+//        }
+//      ]
+//    }),
     new CleanWebpackPlugin()
   ]
 }

@@ -35,6 +35,7 @@ public class AppointmentService {
         // Creating the AppointmentRecord and Set the appointmentId
         AppointmentRecord record = fromRequestToRecord(appointmentCreateRequest);
         record.setAppointmentId(appointmentId);
+        record.setBookingId(UUID.randomUUID().toString());
 
         // Saving the record to the repository
         appointmentRepository.save(record);
@@ -96,6 +97,7 @@ public class AppointmentService {
             AppointmentRecord updatedRecord = appointmentRepository.save(record);
             cache.evict(appointmentId);
             cache.add(record.getAppointmentId(), record);
+            //BookingData data = lambdaServiceClient.getBooking(updatedRecord.getBookingId());
 
             // Notifying the Lambda service about the appointment update
             lambdaServiceClient.updateBooking(fromRecordToBookingData(updatedRecord));
@@ -162,8 +164,10 @@ public class AppointmentService {
     private BookingData fromRecordToBookingData(AppointmentRecord record) {
 
         BookingData bookingData = new BookingData();
+        bookingData.setBookingId(record.getBookingId());
         bookingData.setId(record.getAppointmentId());
-        bookingData.setPatientName(record.getPatientFirstName() + " " + record.getPatientLastName());
+        bookingData.setPatientName(record.getPatientFirstName());
+        bookingData.setPatientLastName(record.getPatientLastName());
         bookingData.setProviderName(record.getProviderName());
         bookingData.setGender(record.getGender());
         bookingData.setAppointmentDate(record.getAppointmentDate());

@@ -30,8 +30,6 @@ public class AppointmentController {
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create appointment");
         }
     }
 
@@ -61,10 +59,10 @@ public class AppointmentController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<AppointmentRecord> updateAppointmentById(@PathVariable("id") String id, @RequestBody AppointmentCreateRequest appointmentCreateRequest) {
 
-        if (appointmentCreateRequest.getPatientFirstName() == null || appointmentCreateRequest.getPatientFirstName().length() == 0) {
+        if (appointmentCreateRequest.getPatientFirstName() == null || appointmentCreateRequest.getPatientFirstName().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Patient Name");
         }
 
