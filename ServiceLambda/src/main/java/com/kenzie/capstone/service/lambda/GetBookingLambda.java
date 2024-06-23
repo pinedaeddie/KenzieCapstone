@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class GetBookingLambda implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     static final Logger log = LogManager.getLogger();
@@ -32,16 +33,16 @@ public class GetBookingLambda implements RequestHandler<APIGatewayProxyRequestEv
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent().withHeaders(headers);
 
-        String bookingId = input.getPathParameters().get("id");
+        String id = input.getPathParameters().get("id");
 
-        if (bookingId == null || bookingId.length() == 0) {
+        if (id == null || id.length() == 0) {
             return response
                     .withStatusCode(400)
                     .withBody("Booking Id is invalid");
         }
 
         try {
-            BookingRecord booking = lambdaService.getBookingData(bookingId);
+            BookingRecord booking = lambdaService.getBookingData(id);
             String output = gson.toJson(booking);
             return response
                     .withStatusCode(200)

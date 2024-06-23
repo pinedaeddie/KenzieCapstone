@@ -7,6 +7,8 @@ import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.google.common.collect.ImmutableMap;
 import com.kenzie.capstone.service.model.BookingRecord;
 
+import java.time.LocalDateTime;
+
 public class BookingDao {
 
     private final DynamoDBMapper mapper;
@@ -36,14 +38,15 @@ public class BookingDao {
                     .withExpected(ImmutableMap.of(
                             "id", new ExpectedAttributeValue().withExists(true)
                     )));
+            return bookingRecord;
         } catch (ConditionalCheckFailedException e) {
-            throw new IllegalArgumentException("ID does not exist");
+            throw new IllegalArgumentException("Booking ID does not exist");
         }
-        return bookingRecord;
     }
 
     public boolean deleteBookingById(String id) {
-        BookingRecord bookingRecord = mapper.load(BookingRecord.class, id);
+        //BookingRecord bookingRecord = mapper.load(BookingRecord.class, id);
+        BookingRecord bookingRecord = getBookingById(id);
 
         if (bookingRecord == null) {
             return false;

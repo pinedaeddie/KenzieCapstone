@@ -13,8 +13,7 @@ import com.kenzie.capstone.service.exceptions.InvalidDataException;
 import com.kenzie.capstone.service.model.BookingData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class CreateBookingLambda implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -37,7 +36,7 @@ public class CreateBookingLambda implements RequestHandler<APIGatewayProxyReques
 
             return response
                     .withStatusCode(201)
-                    .withBody(gson.toJson(output));
+                    .withBody((output));
         } catch (InvalidDataException e) {
             return response
                     .withStatusCode(400)

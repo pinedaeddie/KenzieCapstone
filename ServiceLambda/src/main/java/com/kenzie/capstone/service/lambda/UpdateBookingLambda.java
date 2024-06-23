@@ -14,8 +14,7 @@ import com.kenzie.capstone.service.model.BookingData;
 import com.kenzie.capstone.service.model.BookingRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class UpdateBookingLambda implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 

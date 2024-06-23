@@ -1,6 +1,7 @@
 package com.kenzie.capstone.service.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kenzie.capstone.service.model.BookingData;
 
@@ -39,7 +40,7 @@ public class LambdaServiceClient {
         String response = endpointUtility.getEndpoint(GET_BOOKING_ENDPOINT.replace("{id}", id));
 
         try {
-            mapper.readValue(response, BookingData.class);
+            mapper.readValue(response, new TypeReference<>(){});
         } catch (Exception e) {
             throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
         }
