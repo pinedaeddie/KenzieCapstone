@@ -32,9 +32,7 @@ public class BookingRecord {
     }
 
     @DynamoDBAttribute(attributeName = "bookingId")
-    public String getBookingId() {
-        return bookingId;
-    }
+    public String getBookingId() {return bookingId;}
 
     public void setBookingId(String bookingId) {
         this.bookingId = bookingId;
@@ -107,9 +105,7 @@ public class BookingRecord {
 
     @DynamoDBAttribute(attributeName = "bookingTime")
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
-    public LocalDateTime getBookingTime() {
-        return bookingTime;
-    }
+    public LocalDateTime getBookingTime() {return bookingTime;}
 
     public void setBookingTime(LocalDateTime bookingTime) {
         this.bookingTime = bookingTime;

@@ -45,7 +45,7 @@ public class BookingDao {
     }
 
     public boolean deleteBookingById(String id) {
-        //BookingRecord bookingRecord = mapper.load(BookingRecord.class, id);
+
         BookingRecord bookingRecord = getBookingById(id);
 
         if (bookingRecord == null) {

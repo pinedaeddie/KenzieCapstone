@@ -57,13 +57,9 @@ public class BookingData {
         this.patientName = patientName;
     }
 
-    public String getPatientLastName() {
-        return patientLastName;
-    }
+    public String getPatientLastName() {return patientLastName;}
 
-    public void setPatientLastName(String patientLastName) {
-        this.patientLastName = patientLastName;
-    }
+    public void setPatientLastName(String patientLastName) {this.patientLastName = patientLastName;}
 
     public String getProviderName() {
         return providerName;

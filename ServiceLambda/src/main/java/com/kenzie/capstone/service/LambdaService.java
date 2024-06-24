@@ -52,7 +52,7 @@ public class LambdaService {
         BookingRecord bookingRecord = new BookingRecord();
         bookingRecord.setId(bookingData.getId());
         bookingRecord.setBookingId(bookingData.getBookingId());
-        bookingRecord.setPatientName(bookingData.getPatientName());
+        bookingRecord.setPatientName(bookingData.getPatientName() + " " + bookingData.getPatientLastName());
         bookingRecord.setProviderName(bookingData.getProviderName());
         bookingRecord.setGender(bookingData.getGender());
         bookingRecord.setReminderSent(false);
@@ -81,7 +81,7 @@ public class LambdaService {
 
         bookingRecord.setId(bookingData.getId());
         bookingRecord.setBookingId(bookingData.getBookingId());
-        bookingRecord.setPatientName(bookingData.getPatientName());
+        bookingRecord.setPatientName(bookingData.getPatientName() + " " + bookingData.getPatientLastName());
         bookingRecord.setProviderName(bookingData.getProviderName());
         bookingRecord.setGender(bookingData.getGender());
         bookingRecord.setReminderSent(bookingData.isReminderSent());

@@ -48,18 +48,27 @@ public class LambdaServiceClient {
 
     public void updateBooking(BookingData bookingData) {
         EndpointUtility endpointUtility = new EndpointUtility();
+
         String request;
         try {
             request = mapper.writeValueAsString(bookingData);
+            System.out.println("Serialized BookingData: " + request);
         } catch (JsonProcessingException e) {
-            throw new ApiGatewayException("Unable to serialize request: " + e);
+            throw new ApiGatewayException("Unable to serialize request: " + e.getMessage());
         }
-        String response = endpointUtility.postEndpoint(UPDATE_BOOKING_ENDPOINT, request);
+
+        String response;
+        try {
+            response = endpointUtility.postEndpoint(UPDATE_BOOKING_ENDPOINT, request);
+            System.out.println("Response from Lambda: " + response);
+        } catch (Exception e) {
+            throw new ApiGatewayException("Error while calling Lambda service: " + e.getMessage());
+        }
 
         try {
             mapper.readValue(response, BookingData.class);
         } catch (Exception e) {
-            throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
+            throw new ApiGatewayException("Unable to deserialize response: " + e.getMessage());
         }
     }
 
@@ -73,7 +82,7 @@ public class LambdaServiceClient {
             throw new ApiGatewayException("Unable to serialize request: " + e);
         }
 
-        String response = endpointUtility.postEndpoint(DELETE_BOOKING_ENDPOINT, request);
+        String response = endpointUtility.postEndpoint(DELETE_BOOKING_ENDPOINT.replace("{id}", id), request);
         boolean outcome;
         try {
             outcome = mapper.readValue(response, Boolean.class);

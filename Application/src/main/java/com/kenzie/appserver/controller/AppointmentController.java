@@ -66,12 +66,8 @@ public class AppointmentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Patient Name");
         }
 
-        try {
-            AppointmentRecord record = appointmentService.updateAppointmentById(id, appointmentCreateRequest);
-            return ResponseEntity.created(URI.create("/appointments/" + record.getAppointmentId())).body(record);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        AppointmentRecord updatedAppointment = appointmentService.updateAppointmentById(id, appointmentCreateRequest);
+        return ResponseEntity.ok(updatedAppointment);
     }
 
     @DeleteMapping("/{id}")
@@ -82,8 +78,6 @@ public class AppointmentController {
             return ResponseEntity.ok(deletedRecord);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete appointment");
         }
     }
 }
