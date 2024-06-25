@@ -94,7 +94,7 @@ public class EndpointUtility {
             HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             int statusCode = httpResponse.statusCode();
-            if (statusCode == 201) {
+            if (statusCode == 200 || statusCode == 201) {
                 return httpResponse.body();
             } else {
                 throw new ApiGatewayException("POST request failed: " + statusCode + " status code received."

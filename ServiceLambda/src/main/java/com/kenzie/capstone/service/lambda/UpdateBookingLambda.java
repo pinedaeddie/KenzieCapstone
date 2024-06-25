@@ -15,7 +15,6 @@ import com.kenzie.capstone.service.model.BookingRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class UpdateBookingLambda implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     static final Logger log = LogManager.getLogger();
@@ -31,9 +30,13 @@ public class UpdateBookingLambda implements RequestHandler<APIGatewayProxyReques
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
-            String bookingId = input.getPathParameters().get("id");
+            String appointmentId = input.getPathParameters().get("id");
             BookingData bookingData = gson.fromJson(input.getBody(), BookingData.class);
-            BookingRecord updatedBooking = lambdaService.updateBooking(bookingId, bookingData);
+            if (bookingData.getId() == null || bookingData.getId().isEmpty()) {
+                throw new InvalidDataException("ID is required");
+            }
+
+            BookingData updatedBooking = lambdaService.updateBooking(appointmentId, bookingData);
             String output = gson.toJson(updatedBooking);
 
             return response

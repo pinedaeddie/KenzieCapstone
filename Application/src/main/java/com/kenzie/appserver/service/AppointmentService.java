@@ -8,6 +8,8 @@ import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import com.kenzie.capstone.service.model.BookingData;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -35,6 +37,7 @@ public class AppointmentService {
         // Creating the AppointmentRecord and Set the appointmentId
         AppointmentRecord record = fromRequestToRecord(appointmentCreateRequest);
         record.setAppointmentId(appointmentId);
+        record.setBookingId(UUID.randomUUID().toString());
 
         // Saving the record to the repository
         appointmentRepository.save(record);
@@ -82,28 +85,36 @@ public class AppointmentService {
             throw new IllegalArgumentException("Appointment ID cannot be null");
         }
 
-        Optional<AppointmentRecord> optionalRecord = appointmentRepository.findById(appointmentId);
+        AppointmentRecord record = appointmentRepository.findById(appointmentId).orElseThrow(() -> new IllegalArgumentException("Appointment ID does not exist"));
+        // Updating the existing record with new data
+        record.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
+        record.setPatientLastName(appointmentCreateRequest.getPatientLastName());
+        record.setProviderName(appointmentCreateRequest.getProviderName());
+        record.setGender(appointmentCreateRequest.getGender());
+        record.setAppointmentDate(appointmentCreateRequest.getAppointmentDate());
+        record.setAppointmentTime(appointmentCreateRequest.getAppointmentTime());
 
-        if (optionalRecord.isPresent()) {
-            AppointmentRecord record = optionalRecord.get();
-            record.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
-            record.setPatientLastName(appointmentCreateRequest.getPatientLastName());
-            record.setProviderName(appointmentCreateRequest.getProviderName());
-            record.setGender(appointmentCreateRequest.getGender());
-            record.setAppointmentDate(appointmentCreateRequest.getAppointmentDate());
-            record.setAppointmentTime(appointmentCreateRequest.getAppointmentTime());
+        // Saving the updated record
+        appointmentRepository.save(record);
 
-            AppointmentRecord updatedRecord = appointmentRepository.save(record);
-            cache.evict(appointmentId);
-            cache.add(record.getAppointmentId(), record);
+        // Creating BookingData and update booking through LambdaServiceClient
 
-            // Notifying the Lambda service about the appointment update
-            lambdaServiceClient.updateBooking(fromRecordToBookingData(updatedRecord));
+        BookingData bookingData = new BookingData();
+        bookingData.setId(record.getAppointmentId());
+        bookingData.setBookingId(record.getBookingId());
+        bookingData.setPatientName(record.getPatientFirstName());
+        bookingData.setPatientLastName(record.getPatientLastName());
+        bookingData.setProviderName(record.getProviderName());
+        bookingData.setGender(record.getGender());
+        bookingData.setAppointmentDate(record.getAppointmentDate());
+        bookingData.setAppointmentTime(record.getAppointmentTime());
 
-            return updatedRecord;
-        } else {
-            throw new IllegalArgumentException( "Appointment not found with id: " + appointmentId);
-        }
+        // Notifying the Lambda service about the update
+        lambdaServiceClient.updateBooking(bookingData.getId(),bookingData);
+
+        // Returning the updated appointment record
+        return record;
+
     }
 
     public AppointmentRecord deleteAppointmentById(String id) {
@@ -127,6 +138,9 @@ public class AppointmentService {
         }
 
         return deletedRecord;
+    }
+    public void deleteAllAppointments(){
+        appointmentRepository.deleteAll();
     }
 
 
@@ -162,8 +176,10 @@ public class AppointmentService {
     private BookingData fromRecordToBookingData(AppointmentRecord record) {
 
         BookingData bookingData = new BookingData();
+        bookingData.setBookingId(record.getBookingId());
         bookingData.setId(record.getAppointmentId());
-        bookingData.setPatientName(record.getPatientFirstName() + " " + record.getPatientLastName());
+        bookingData.setPatientName(record.getPatientFirstName());
+        bookingData.setPatientLastName(record.getPatientLastName());
         bookingData.setProviderName(record.getProviderName());
         bookingData.setGender(record.getGender());
         bookingData.setAppointmentDate(record.getAppointmentDate());

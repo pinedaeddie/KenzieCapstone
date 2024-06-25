@@ -16,11 +16,9 @@ public class BookingRecord {
     private String patientName;
     private String providerName;
     private String gender;
-    private String status;
     private boolean reminderSent;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private LocalDateTime bookingTime;
 
     @DynamoDBHashKey(attributeName = "id")
     public String getId() {
@@ -32,9 +30,7 @@ public class BookingRecord {
     }
 
     @DynamoDBAttribute(attributeName = "bookingId")
-    public String getBookingId() {
-        return bookingId;
-    }
+    public String getBookingId() {return bookingId;}
 
     public void setBookingId(String bookingId) {
         this.bookingId = bookingId;
@@ -66,16 +62,6 @@ public class BookingRecord {
     public void setGender(String gender) {
         this.gender = gender;
     }
-
-    @DynamoDBAttribute(attributeName = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     @DynamoDBAttribute(attributeName = "reminderSent")
     public boolean isReminderSent() {
         return reminderSent;
@@ -105,16 +91,6 @@ public class BookingRecord {
         this.updatedAt = updatedAt;
     }
 
-    @DynamoDBAttribute(attributeName = "bookingTime")
-    @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
-    public LocalDateTime getBookingTime() {
-        return bookingTime;
-    }
-
-    public void setBookingTime(LocalDateTime bookingTime) {
-        this.bookingTime = bookingTime;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -126,15 +102,13 @@ public class BookingRecord {
                 Objects.equals(patientName, that.patientName) &&
                 Objects.equals(providerName, that.providerName) &&
                 Objects.equals(gender, that.gender) &&
-                Objects.equals(status, that.status) &&
                 Objects.equals(createdAt, that.createdAt) &&
-                Objects.equals(updatedAt, that.updatedAt) &&
-                Objects.equals(bookingTime, that.bookingTime);
+                Objects.equals(updatedAt, that.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookingId, patientName, providerName, gender, status, reminderSent, createdAt, updatedAt, bookingTime);
+        return Objects.hash(id, bookingId, patientName, providerName, gender, reminderSent, createdAt, updatedAt);
     }
 
     @Override
@@ -145,11 +119,9 @@ public class BookingRecord {
                 ", patientName='" + patientName + '\'' +
                 ", providerName='" + providerName + '\'' +
                 ", gender='" + gender + '\'' +
-                ", status='" + status + '\'' +
                 ", reminderSent=" + reminderSent +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", bookingTime=" + bookingTime +
                 '}';
     }
 }

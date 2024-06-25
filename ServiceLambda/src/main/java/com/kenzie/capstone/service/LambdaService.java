@@ -51,41 +51,51 @@ public class LambdaService {
 
         BookingRecord bookingRecord = new BookingRecord();
         bookingRecord.setId(bookingData.getId());
-        bookingRecord.setPatientName(bookingData.getPatientName());
+        bookingRecord.setBookingId(bookingData.getBookingId());
+        bookingRecord.setPatientName(bookingData.getPatientName() + " " + bookingData.getPatientLastName());
         bookingRecord.setProviderName(bookingData.getProviderName());
         bookingRecord.setGender(bookingData.getGender());
         bookingRecord.setReminderSent(false);
         bookingRecord.setCreatedAt(LocalDateTime.now());
         bookingRecord.setUpdatedAt(LocalDateTime.now());
-        bookingRecord.setBookingTime(bookingData.getBookingTime());
 
         bookingDao.storeBookingData(bookingRecord);
     }
 
-    public BookingRecord updateBooking(String id, BookingData bookingData) {
-
+    public BookingData updateBooking(String id, BookingData bookingData) {
         if (id == null || id.isEmpty()) {
             throw new InvalidDataException("Request must contain a valid Customer ID");
         }
-
         if (bookingData.getPatientName() == null || bookingData.getPatientName().isEmpty()
                 || bookingData.getProviderName() == null || bookingData.getProviderName().isEmpty()) {
             throw new InvalidDataException("Booking data must contain patient name and provider name");
         }
-
         BookingRecord bookingRecord = bookingDao.getBookingById(id);
         if (bookingRecord == null) {
             throw new InvalidDataException("Booking ID does not exist");
         }
 
-        bookingRecord.setPatientName(bookingData.getPatientName());
+        bookingRecord.setId(id);
+        bookingRecord.setBookingId(bookingData.getBookingId());
+        bookingRecord.setPatientName(bookingData.getPatientName() + " " + bookingData.getPatientLastName());
         bookingRecord.setProviderName(bookingData.getProviderName());
-        bookingRecord.setGender(bookingData.getGender());
         bookingRecord.setReminderSent(bookingData.isReminderSent());
+        bookingRecord.setCreatedAt(LocalDateTime.now());
         bookingRecord.setUpdatedAt(LocalDateTime.now());
-        bookingRecord.setBookingTime(bookingData.getBookingTime());
+        bookingRecord.setGender(bookingData.getGender());
 
-        return bookingDao.updateBookingData(bookingRecord);
+        BookingRecord updatedBookingRecord = bookingDao.updateBookingData(bookingRecord);
+
+        BookingData updatedBookingData = new BookingData();
+        updatedBookingData.setId(updatedBookingRecord.getId());
+        updatedBookingData.setBookingId(updatedBookingRecord.getBookingId());
+        updatedBookingData.setPatientName(updatedBookingRecord.getPatientName());
+        updatedBookingData.setPatientLastName(updatedBookingRecord.getPatientName());
+        updatedBookingData.setProviderName(updatedBookingRecord.getProviderName());
+        updatedBookingData.setGender(updatedBookingRecord.getGender());
+        updatedBookingData.setReminderSent(updatedBookingRecord.isReminderSent());
+
+        return updatedBookingData;
     }
 
     public boolean deleteBookings(String bookingId) {

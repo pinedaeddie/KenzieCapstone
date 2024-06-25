@@ -116,7 +116,6 @@ public class BookingServiceTest {
         bookingData.setPatientName("John Doe");
         bookingData.setProviderName("Dr. Smith");
         bookingData.setGender("Male");
-        bookingData.setBookingTime(LocalDateTime.now());
 
         // WHEN
         lambdaService.saveBooking(bookingData);
@@ -163,10 +162,10 @@ public class BookingServiceTest {
         // GIVEN
         String validId = "valid-id";
         BookingData updatedData = new BookingData();
+        updatedData.setId(validId);
         updatedData.setPatientName("Jane Doe");
         updatedData.setProviderName("Dr. Smith");
         updatedData.setGender("Female");
-        updatedData.setBookingTime(LocalDateTime.now());
         updatedData.setReminderSent(true);
 
         BookingRecord existingRecord = new BookingRecord();
@@ -174,10 +173,8 @@ public class BookingServiceTest {
         existingRecord.setPatientName("Existing Patient");
         existingRecord.setProviderName("Existing Provider");
         existingRecord.setGender("Existing Gender");
-        existingRecord.setStatus("Existing Status");
         existingRecord.setCreatedAt(LocalDateTime.now().minusDays(1));
         existingRecord.setUpdatedAt(LocalDateTime.now());
-        existingRecord.setBookingTime(LocalDateTime.now().plusDays(1));
         existingRecord.setReminderSent(false);
 
         ArgumentCaptor<BookingRecord> captor = ArgumentCaptor.forClass(BookingRecord.class);
@@ -186,11 +183,11 @@ public class BookingServiceTest {
         when(bookingDao.updateBookingData(any(BookingRecord.class))).thenReturn(existingRecord);
 
         // WHEN
-        BookingRecord updatedRecord = lambdaService.updateBooking(validId, updatedData);
+        BookingData bookingData = lambdaService.updateBooking(validId, updatedData);
 
         // THEN
-        assertNotNull(updatedRecord);
-        assertEquals(validId, updatedRecord.getId());
+        assertNotNull(bookingData);
+        assertEquals(validId, bookingData.getId());
         verify(bookingDao).updateBookingData(captor.capture());
         BookingRecord capturedRecord = captor.getValue();
         assertEquals(validId, capturedRecord.getId(), "The id passed to bookingDao.updateBookingData() should match");

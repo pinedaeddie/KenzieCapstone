@@ -6,6 +6,7 @@ import java.util.Objects;
 @DynamoDBTable(tableName = "Appointments")
 public class AppointmentRecord {
     private String appointmentId;
+    private String bookingId;
     private String patientFirstName;
     private String patientLastName;
     private String providerName;
@@ -22,6 +23,15 @@ public class AppointmentRecord {
 
     public void setAppointmentId(String appointmentId) {
         this.appointmentId = appointmentId;
+    }
+
+    @DynamoDBAttribute(attributeName = "bookingId")
+    public String getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(String bookingId) {
+        this.bookingId = bookingId;
     }
 
     @DynamoDBAttribute(attributeName = "patientFirstName")
@@ -80,12 +90,11 @@ public class AppointmentRecord {
         if (this == o) return true;
         if (!(o instanceof AppointmentRecord)) return false;
         AppointmentRecord record = (AppointmentRecord) o;
-        return Objects.equals(appointmentId, record.appointmentId) && Objects.equals(patientFirstName, record.patientFirstName) && Objects.equals(patientLastName, record.patientLastName) && Objects.equals(providerName, record.providerName) &&
-                Objects.equals(gender, record.gender) && Objects.equals(appointmentDate, record.appointmentDate) && Objects.equals(appointmentTime, record.appointmentTime);
+        return Objects.equals(appointmentId, record.appointmentId) && Objects.equals(bookingId, record.bookingId) && Objects.equals(patientFirstName, record.patientFirstName) && Objects.equals(patientLastName, record.patientLastName) && Objects.equals(providerName, record.providerName) && Objects.equals(gender, record.gender) && Objects.equals(appointmentDate, record.appointmentDate) && Objects.equals(appointmentTime, record.appointmentTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(appointmentId, patientFirstName, patientLastName, providerName, gender, appointmentDate, appointmentTime);
+        return Objects.hash(appointmentId, bookingId, patientFirstName, patientLastName, providerName, gender, appointmentDate, appointmentTime);
     }
 }

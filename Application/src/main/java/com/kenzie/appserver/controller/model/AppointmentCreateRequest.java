@@ -74,11 +74,7 @@ public class AppointmentCreateRequest {
         this.appointmentDate = appointmentDate;
     }
 
-    public String getAppointmentTime() {
-        return appointmentTime;
-    }
+    public String getAppointmentTime() {return appointmentTime;}
 
-    public void setAppointmentTime(String appointmentTime) {
-        this.appointmentTime = appointmentTime;
-    }
+    public void setAppointmentTime(String appointmentTime) {this.appointmentTime = appointmentTime;}
 }

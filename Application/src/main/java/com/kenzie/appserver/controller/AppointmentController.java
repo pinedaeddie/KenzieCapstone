@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.net.URI;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/appointments")
@@ -30,8 +31,6 @@ public class AppointmentController {
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create appointment");
         }
     }
 
@@ -55,25 +54,19 @@ public class AppointmentController {
         try {
             return ResponseEntity.ok(appointmentService.getAllAppointments());
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve all appointments");
+            return ResponseEntity.ok(new ArrayList<>());
         }
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<AppointmentRecord> updateAppointmentById(@PathVariable("id") String id, @RequestBody AppointmentCreateRequest appointmentCreateRequest) {
 
-        if (appointmentCreateRequest.getPatientFirstName() == null || appointmentCreateRequest.getPatientFirstName().length() == 0) {
+        if (appointmentCreateRequest.getPatientFirstName() == null || appointmentCreateRequest.getPatientFirstName().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Patient Name");
         }
 
-        try {
-            AppointmentRecord record = appointmentService.updateAppointmentById(id, appointmentCreateRequest);
-            return ResponseEntity.created(URI.create("/appointments/" + record.getAppointmentId())).body(record);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        AppointmentRecord updatedAppointment = appointmentService.updateAppointmentById(id, appointmentCreateRequest);
+        return ResponseEntity.ok(updatedAppointment);
     }
 
     @DeleteMapping("/{id}")
@@ -84,8 +77,6 @@ public class AppointmentController {
             return ResponseEntity.ok(deletedRecord);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete appointment");
         }
     }
 }

@@ -36,7 +36,7 @@ public class BookingDao {
         try {
             mapper.save(bookingRecord, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
-                            "id", new ExpectedAttributeValue().withExists(true)
+                            bookingRecord.getId(), new ExpectedAttributeValue().withExists(false)
                     )));
             return bookingRecord;
         } catch (ConditionalCheckFailedException e) {
@@ -45,7 +45,7 @@ public class BookingDao {
     }
 
     public boolean deleteBookingById(String id) {
-        //BookingRecord bookingRecord = mapper.load(BookingRecord.class, id);
+
         BookingRecord bookingRecord = getBookingById(id);
 
         if (bookingRecord == null) {
