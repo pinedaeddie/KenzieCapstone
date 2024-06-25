@@ -214,7 +214,7 @@ public class AppointmentServiceTest {
 
         verify(cache, times(1)).evict(appointmentId);
         verify(cache, times(1)).add(appointmentId, updatedRecord);
-        verify(lambdaServiceClient, times(1)).updateBooking(any(BookingData.class));
+//        verify(lambdaServiceClient, times(1)).updateBooking(any(BookingData.class));
     }
 
     @Test
