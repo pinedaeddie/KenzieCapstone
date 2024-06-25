@@ -122,7 +122,7 @@ public class BookingServiceTest {
         lambdaService.saveBooking(bookingData);
 
         // THEN
-        verify(bookingDao, times(1)).storeBookingData(any(BookingRecord.class));
+        verify(bookingDao, times(1)).createBookingData(any(BookingRecord.class));
     }
 
     @Test
@@ -163,6 +163,7 @@ public class BookingServiceTest {
         // GIVEN
         String validId = "valid-id";
         BookingData updatedData = new BookingData();
+        updatedData.setId(validId);
         updatedData.setPatientName("Jane Doe");
         updatedData.setProviderName("Dr. Smith");
         updatedData.setGender("Female");

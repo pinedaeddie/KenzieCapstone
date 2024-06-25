@@ -7,7 +7,6 @@ import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.google.common.collect.ImmutableMap;
 import com.kenzie.capstone.service.model.BookingRecord;
 
-import java.time.LocalDateTime;
 
 public class BookingDao {
 
@@ -21,7 +20,7 @@ public class BookingDao {
         return mapper.load(BookingRecord.class, id);
     }
 
-    public void storeBookingData(BookingRecord bookingRecord) {
+    public void createBookingData(BookingRecord bookingRecord) {
         try {
             mapper.save(bookingRecord, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
@@ -36,7 +35,7 @@ public class BookingDao {
         try {
             mapper.save(bookingRecord, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
-                            "id", new ExpectedAttributeValue().withExists(true)
+                            bookingRecord.getId(), new ExpectedAttributeValue().withExists(false)
                     )));
             return bookingRecord;
         } catch (ConditionalCheckFailedException e) {

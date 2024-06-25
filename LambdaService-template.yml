@@ -75,7 +75,7 @@ Resources:
         MonitorElderlyParentsHealth:
           Type: Api
           Properties:
-            Path: /booking/update
+            Path: /booking/update/{id}
             Method: post
 
   DeleteBookingLambdaFunction:

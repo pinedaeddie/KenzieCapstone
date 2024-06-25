@@ -54,13 +54,14 @@ public class LambdaService {
         bookingRecord.setBookingId(bookingData.getBookingId());
         bookingRecord.setPatientName(bookingData.getPatientName() + " " + bookingData.getPatientLastName());
         bookingRecord.setProviderName(bookingData.getProviderName());
+        bookingRecord.setStatus("Complete");
         bookingRecord.setGender(bookingData.getGender());
-        bookingRecord.setReminderSent(false);
+        bookingRecord.setReminderSent(bookingData.isReminderSent());
         bookingRecord.setCreatedAt(LocalDateTime.now());
         bookingRecord.setUpdatedAt(LocalDateTime.now());
         bookingRecord.setBookingTime(bookingData.getBookingTime());
 
-        bookingDao.storeBookingData(bookingRecord);
+        bookingDao.createBookingData(bookingRecord);
     }
 
     public BookingRecord updateBooking(String id, BookingData bookingData) {
@@ -79,12 +80,15 @@ public class LambdaService {
             throw new InvalidDataException("Booking ID does not exist");
         }
 
+        bookingRecord.setId(id);
         bookingRecord.setId(bookingData.getId());
         bookingRecord.setBookingId(bookingData.getBookingId());
         bookingRecord.setPatientName(bookingData.getPatientName() + " " + bookingData.getPatientLastName());
         bookingRecord.setProviderName(bookingData.getProviderName());
+        bookingRecord.setStatus("Complete");
         bookingRecord.setGender(bookingData.getGender());
         bookingRecord.setReminderSent(bookingData.isReminderSent());
+        bookingRecord.setCreatedAt(LocalDateTime.now());
         bookingRecord.setUpdatedAt(LocalDateTime.now());
         bookingRecord.setBookingTime(bookingData.getBookingTime());
 

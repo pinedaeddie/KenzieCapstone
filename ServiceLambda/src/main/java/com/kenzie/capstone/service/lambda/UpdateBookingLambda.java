@@ -30,13 +30,13 @@ public class UpdateBookingLambda implements RequestHandler<APIGatewayProxyReques
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         try {
-            //String bookingId = input.getPathParameters().get("id");
+            String appointmentId = input.getPathParameters().get("id");
             BookingData bookingData = gson.fromJson(input.getBody(), BookingData.class);
             if (bookingData.getId() == null || bookingData.getId().isEmpty()) {
                 throw new InvalidDataException("ID is required");
             }
             //String bookingId = bookingData.getId();
-            BookingRecord updatedBooking = lambdaService.updateBooking(bookingData.getId(), bookingData);
+            BookingRecord updatedBooking = lambdaService.updateBooking(appointmentId, bookingData);
             String output = gson.toJson(updatedBooking);
 
             return response

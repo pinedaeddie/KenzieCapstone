@@ -69,7 +69,7 @@ public class AppointmentService {
         }
 
         // Notifying the Lambda service about the appointment
-        lambdaServiceClient.getBooking(id);
+        //lambdaServiceClient.getBooking(id);
         return response;
     }
 
@@ -108,7 +108,7 @@ public class AppointmentService {
         bookingData.setAppointmentTime(record.getAppointmentTime());
 
         // Notifying the Lambda service about the update
-        lambdaServiceClient.updateBooking(bookingData);
+        lambdaServiceClient.updateBooking(bookingData.getId(), bookingData);
 
         // Returning the updated appointment record
         return record;

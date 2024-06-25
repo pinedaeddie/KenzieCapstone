@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Handles conversion between ZonedDateTime and String.
+ * Handles conversion between LocalDateTime and String.
  */
 public class LocalDateTimeConverter implements DynamoDBTypeConverter<String, LocalDateTime> {
     @Override

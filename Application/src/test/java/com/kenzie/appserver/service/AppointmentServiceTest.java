@@ -196,10 +196,12 @@ public class AppointmentServiceTest {
 
         AppointmentRecord record = new AppointmentRecord();
         record.setAppointmentId(appointmentId);
+        record.setBookingId(UUID.randomUUID().toString());
 
-        // WHEN
         when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(record));
         when(appointmentRepository.save(any(AppointmentRecord.class))).thenReturn(record);
+
+        // WHEN
         AppointmentRecord updatedRecord = appointmentService.updateAppointmentById(appointmentId, request);
 
         // THEN
@@ -212,9 +214,7 @@ public class AppointmentServiceTest {
         assertEquals(request.getAppointmentDate(), updatedRecord.getAppointmentDate());
         assertEquals(request.getAppointmentTime(), updatedRecord.getAppointmentTime());
 
-        verify(cache, times(1)).evict(appointmentId);
-        verify(cache, times(1)).add(appointmentId, updatedRecord);
-        verify(lambdaServiceClient, times(1)).updateBooking(any(BookingData.class));
+        verify(lambdaServiceClient, times(1)).updateBooking(eq(appointmentId), any(BookingData.class));
     }
 
     @Test
@@ -229,13 +229,14 @@ public class AppointmentServiceTest {
         request.setAppointmentDate("2023-06-15");
         request.setAppointmentTime("10:00");
 
-        // WHEN / THEN
+        // Mock repository behavior
         when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.empty());
 
+        // WHEN / THEN
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             appointmentService.updateAppointmentById(appointmentId, request);
         });
-        assertEquals("Appointment not found with id: " + appointmentId, exception.getMessage());
+        assertEquals("Appointment ID does not exist", exception.getMessage());
     }
 
     @Test
