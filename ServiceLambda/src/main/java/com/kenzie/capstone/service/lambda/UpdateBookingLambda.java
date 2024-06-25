@@ -35,8 +35,8 @@ public class UpdateBookingLambda implements RequestHandler<APIGatewayProxyReques
             if (bookingData.getId() == null || bookingData.getId().isEmpty()) {
                 throw new InvalidDataException("ID is required");
             }
-            //String bookingId = bookingData.getId();
-            BookingRecord updatedBooking = lambdaService.updateBooking(appointmentId, bookingData);
+
+            BookingData updatedBooking = lambdaService.updateBooking(appointmentId, bookingData);
             String output = gson.toJson(updatedBooking);
 
             return response

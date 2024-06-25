@@ -8,6 +8,8 @@ import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import com.kenzie.capstone.service.model.BookingData;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -69,7 +71,7 @@ public class AppointmentService {
         }
 
         // Notifying the Lambda service about the appointment
-        //lambdaServiceClient.getBooking(id);
+        lambdaServiceClient.getBooking(id);
         return response;
     }
 
@@ -84,7 +86,6 @@ public class AppointmentService {
         }
 
         AppointmentRecord record = appointmentRepository.findById(appointmentId).orElseThrow(() -> new IllegalArgumentException("Appointment ID does not exist"));
-
         // Updating the existing record with new data
         record.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
         record.setPatientLastName(appointmentCreateRequest.getPatientLastName());
@@ -97,6 +98,7 @@ public class AppointmentService {
         appointmentRepository.save(record);
 
         // Creating BookingData and update booking through LambdaServiceClient
+
         BookingData bookingData = new BookingData();
         bookingData.setId(record.getAppointmentId());
         bookingData.setBookingId(record.getBookingId());
@@ -108,7 +110,7 @@ public class AppointmentService {
         bookingData.setAppointmentTime(record.getAppointmentTime());
 
         // Notifying the Lambda service about the update
-        lambdaServiceClient.updateBooking(bookingData.getId(), bookingData);
+        lambdaServiceClient.updateBooking(bookingData.getId(),bookingData);
 
         // Returning the updated appointment record
         return record;
@@ -136,6 +138,9 @@ public class AppointmentService {
         }
 
         return deletedRecord;
+    }
+    public void deleteAllAppointments(){
+        appointmentRepository.deleteAll();
     }
 
 

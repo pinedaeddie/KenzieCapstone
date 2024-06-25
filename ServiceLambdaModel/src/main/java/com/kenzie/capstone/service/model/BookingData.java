@@ -1,6 +1,5 @@
 package com.kenzie.capstone.service.model;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class BookingData {
@@ -14,10 +13,8 @@ public class BookingData {
     private boolean reminderSent;
     private String appointmentDate;
     private String appointmentTime;
-    private LocalDateTime bookingTime;
 
-    public BookingData(String id, String bookingId, String patientName, String patientLastName, String providerName, String gender,
-                       boolean reminderSent, String appointmentDate, String appointmentTime, LocalDateTime bookingTime) {
+    public BookingData(String id, String bookingId, String patientName, String patientLastName, String providerName, String gender, boolean reminderSent, String appointmentDate, String appointmentTime) {
         this.id = id;
         this.bookingId = bookingId;
         this.patientName = patientName;
@@ -27,7 +24,6 @@ public class BookingData {
         this.reminderSent = reminderSent;
         this.appointmentDate = appointmentDate;
         this.appointmentTime = appointmentTime;
-        this.bookingTime = bookingTime;
     }
 
     public BookingData() {
@@ -93,14 +89,6 @@ public class BookingData {
         this.appointmentTime = appointmentTime;
     }
 
-    public LocalDateTime getBookingTime() {
-        return bookingTime;
-    }
-
-    public void setBookingTime(LocalDateTime bookingTime) {
-        this.bookingTime = bookingTime;
-    }
-
     public boolean isReminderSent() {
         return reminderSent;
     }
@@ -112,14 +100,14 @@ public class BookingData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BookingData)) return false;
-        BookingData that = (BookingData) o;
-        return reminderSent == that.reminderSent && Objects.equals(id, that.id) && Objects.equals(bookingId, that.bookingId) && Objects.equals(patientName, that.patientName) && Objects.equals(patientLastName, that.patientLastName) && Objects.equals(providerName, that.providerName) && Objects.equals(gender, that.gender) && Objects.equals(appointmentDate, that.appointmentDate) && Objects.equals(appointmentTime, that.appointmentTime) && Objects.equals(bookingTime, that.bookingTime);
+        if (o == null || getClass() != o.getClass()) return false;
+        BookingData data = (BookingData) o;
+        return reminderSent == data.reminderSent && Objects.equals(id, data.id) && Objects.equals(bookingId, data.bookingId) && Objects.equals(patientName, data.patientName) && Objects.equals(patientLastName, data.patientLastName) && Objects.equals(providerName, data.providerName) && Objects.equals(gender, data.gender) && Objects.equals(appointmentDate, data.appointmentDate) && Objects.equals(appointmentTime, data.appointmentTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookingId, patientName, patientLastName, providerName, gender, reminderSent, appointmentDate, appointmentTime, bookingTime);
+        return Objects.hash(id, bookingId, patientName, patientLastName, providerName, gender, reminderSent, appointmentDate, appointmentTime);
     }
 
     @Override
@@ -134,7 +122,6 @@ public class BookingData {
                 ", reminderSent=" + reminderSent +
                 ", appointmentDate='" + appointmentDate + '\'' +
                 ", appointmentTime='" + appointmentTime + '\'' +
-                ", bookingTime=" + bookingTime +
                 '}';
     }
 }
