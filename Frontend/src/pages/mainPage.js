@@ -30,14 +30,12 @@ const main = async () => {
     const mainPage = new MainPage();
     mainPage.mount();
 
-    // Query elements inside main function after DOMContentLoaded
-    let shoppingCart = document.querySelector(".shopping-cart");
+    // Querying elements inside the main function after DOMContentLoaded
     let searchForm = document.querySelector(".search-form");
     let loginForm = document.querySelector(".login-form");
     let navbar = document.querySelector(".navbar");
 
     window.onscroll = () => {
-        shoppingCart.classList.remove("active");
         searchForm.classList.remove("active");
         loginForm.classList.remove("active");
         navbar.classList.remove("active");
@@ -45,14 +43,6 @@ const main = async () => {
 
     document.querySelector("#search-btn").onclick = () => {
         searchForm.classList.toggle("active");
-        shoppingCart.classList.remove("active");
-        loginForm.classList.remove("active");
-        navbar.classList.remove("active");
-    };
-
-    document.querySelector("#cart-btn").onclick = () => {
-        shoppingCart.classList.toggle("active");
-        searchForm.classList.remove("active");
         loginForm.classList.remove("active");
         navbar.classList.remove("active");
     };
@@ -60,7 +50,6 @@ const main = async () => {
     document.querySelector("#login-btn").onclick = () => {
         loginForm.classList.toggle("active");
         searchForm.classList.remove("active");
-        shoppingCart.classList.remove("active");
         navbar.classList.remove("active");
     };
 
@@ -68,7 +57,6 @@ const main = async () => {
         navbar.classList.toggle("active");
         loginForm.classList.remove("active");
         searchForm.classList.remove("active");
-        shoppingCart.classList.remove("active");
     };
 };
 

@@ -1,89 +1,662 @@
 :root {
-    /* css variables: https://developer.mozilla.org/en-US/docs/Web/CSS/var */
-    --primary-color: #131921;
-    --secondary-color: #fff;
-    --error-color: rgba(194, 0, 0, 0.71);
+    --green: green;
+    --black: #1e0b04;
+    --light-color: #666;
+    --border: 2rem solid rgba(0,0,0,1);
+    --outline: .1rem solid rgba(0,0,0,1);
+    --box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1);
 }
 
-.background {
-    background-color: #eaeded;
+* {
     margin: 0;
-    counter-reset: section;
+    padding: 0;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: all .2s linear;
+    font-family: 'Times New Roman', Times, serif;
 }
+
+html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    scroll-padding-top: 7rem;
+}
+
+body {
+    background-color: #F0F0F0;
+}
+
+/* -------- Header section starts -------- */
 
 .header {
-    /* Flexbox: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    padding: 0 20px;
-}
-
-.header_home {
-    font-size: 36px;
-    line-height: 40px;
-    height: 100px;
-    text-decoration: none;
-    color: var(--secondary-color);
-}
-
-.header_nav_link {
-    margin-left: 20px;
-    vertical-align: top;
-    line-height: 40px;
-}
-
-.about {
-    margin-left: 20px;
-}
-
-.button, button {
-    background: #aed9ff;
-    padding: 3px;
-    border-radius: 3px;
-    text-decoration: none;
-    color: black;
-    border: 1px solid black;
+    z-index: 1000;
+    display: flex;
+    position: fixed;
     cursor: pointer;
+    padding: .5rem 7%;
+    font-style: italic;
+    align-items: center;
+    transition: ease .5s;
+    background-color: bisque;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.button:hover, button:hover {
-    background: #9cc3e4;
+.header .logo {
+    font-size: 3.2em;
+    color: orangered;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: 'Brush Script MT', cursive;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
 }
 
-.card {
-    color: var(--primary-color);
-    background-color: var(--secondary-color);
-    margin: 20px;
-    padding: 10px 20px;
+.header .logo i {
+    font-size: 1.4em;
+    color: var(--green);
 }
 
-.validated-field:invalid {
-    outline: 2px solid var(--error-color);
-}
-.validated-field:focus:invalid {
-    color: var(--error-color);
+.header .navbar a {
+    cursor: pointer;
+    font-size: 1.3em;
+    margin-left: 30px;
+    font-weight: bold;
+    position: relative;
+    font-style: italic;
+    color: var(--black);
+    transition: ease .5s;
+    text-decoration: none;
+    font-family: 'Times New Roman', Times, serif;
 }
 
-.card-content {
-    max-width: 500px;
+.header .navbar a:hover {
+    color: red;
+    text-decoration: underline;
 }
 
-.card-content .form-field {
+.header .icons div {
+    height: 3rem;
+    width: 2.9rem;
+    cursor: pointer;
+    background: #eee;
+    font-size: 1.3rem;
+    line-height: 3rem;
+    text-align: center;
+    color: var(--black);
+    transition: ease .5s;
+    border: 2px solid black;
+    background-color: bisque;
+}
+
+.header .icons div:hover {
+    color: #fff;
+    color: orangered;
+}
+
+.icons {
     display: flex;
-    flex-direction: column;
+    align-items: center;
 }
 
-#concert-list li {
-    margin-bottom: 1rem;
-}
-
-.state {
+#menu-btn {
     display: none;
 }
 
-.state.active {
-    display: block;
+
+/*-------------- Search ---------------*/
+
+.header .search-form {
+    top: 110%;
+    right: -110%;
+    width: 20rem;
+    height: 3rem;
+    overflow: hidden;
+    background-color: bisque;
+    position: absolute;
+    border-radius: .5rem;
+    box-shadow: var(--box-shadow);
 }
+
+.header .search-form.active {
+    right: 2rem;
+    transition: .4s linear;
+}
+
+.header .search-form input {
+    height: 100%;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.2rem;
+    padding: 0 1.5rem;
+    color: var(--black);
+    text-transform: none;
+    width: calc(100% - 2.5rem);
+}
+
+.header .search-form label {
+    top: 0;
+    right: 0;
+    width: 3rem;
+    height: 100%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 3rem;
+    position: absolute;
+    text-align: center;
+    color: var(--black);
+}
+
+.header .search-form label:hover {
+    color: orangered;
+}
+
+
+/*----------- Login Memeber ------------*/
+
+
+.header .login-form {
+    top: 110%;
+    right: -110%;
+    width: 24rem;
+    padding: 2rem;
+    background: #fff;
+    text-align: center;
+    border: 0px solid;
+    position: absolute;
+    border-radius: .5rem;
+    background-color: bisque;
+    box-shadow: var(--box-shadow);
+}
+
+.header .login-form.active {
+    right: 2rem;
+    transition: .4s linear;
+}
+
+.header .login-form h3 {
+    padding: 1rem;
+    color: orangered;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    text-decoration: underline;
+}
+
+.header .login-form .box {
+    padding: 1rem;
+    margin: .7rem 0;
+    background: #eee;
+    font-size: 1.1rem;
+    border: 0px solid;
+    color: var(--black);
+    text-transform: none;
+    border-radius: .5rem;
+    width: calc(100% - 2.5rem);
+}
+
+.header .login-form p {
+    font-size: 1rem;
+    cursor: pointer;
+    padding: .4rem 0;
+    color: var(--light-color);
+}
+
+.header .login-form p a {
+    color: orangered;
+    text-decoration: underline;
+}
+
+.header .login-form .btn {
+    padding: 1rem;
+    margin: .7rem 0;
+    cursor: pointer;
+    background: #eee;
+    font-size: 1.1rem;
+    border: 0px solid;
+    font-style: italic;
+    color: var(--black);
+    transition: ease .5s;
+    border-radius: .5rem;
+    width: calc(100% - 2.5rem);
+}
+
+.header .login-form .btn:hover {
+    color: #fff;
+    background: orangered;
+}
+
+/* --------- Header section ends --------- */
+
+
+
+/* ---------------- Home ----------------- */
+
+.home {
+    display: flex;
+    border: 0px solid;
+    padding-top: 7rem;
+    padding-bottom: 10rem;
+    justify-content: center;
+}
+
+.content {
+    width: 52rem;
+    border: 0px solid;
+    text-align: center;
+}
+
+.card-content h2 {
+    font-size: 3rem;
+    color: orangered;
+    padding: 1.7rem 0;
+    font-family: 'Brush Script MT', cursive;
+}
+
+.content h3 {
+    font-size: 4.5rem;
+    font-weight: bold;
+    font-style: italic;
+    color: var(--black);
+    padding-bottom: 3rem;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.home .content h3 span {
+    color: var(--green);
+    text-decoration: underline;
+}
+
+.content p {
+    line-height: 1;
+    padding: 1rem 0;
+    font-size: 1.4rem;
+    font-weight: bold;
+    font-style: italic;
+    color: var(--black);
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.content a {
+    margin: 1rem;
+    transition: .7s;
+    cursor: pointer;
+    background: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--black);
+    border-radius: .5rem;
+    padding: .7rem 1.2rem;
+    display: inline-block;
+    border: .2rem solid var(--black);
+}
+
+.content a:hover {
+    color: #fff;
+    background: orangered;
+}
+
+
+/* ---------------- Banner section starts ----------------- */
+
+
+.card-content {
+    margin-bottom: 50px;
+}
+
+.card-content button {
+    margin: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background: none;
+    font-weight: bold;
+    font-style: italic;
+    color: var(--black);
+    padding: .8rem 3rem;
+    border-radius: .5rem;
+    transition: ease .5s;
+    display: inline-block;
+    border: .2rem solid var(--black);
+}
+
+.card-content button:hover {
+    color: #fff;
+    background: orangered;
+}
+
+input {
+    width: 55%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1.2px solid #1e0b04;
+}
+
+.home .content .card-content .dropdown select {
+    width: 55%;
+    padding: 11px;
+    font-size: 1rem;
+    font-style: italic;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    color: var(--light-color);
+    border: .1rem solid var(--black);
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.gap {
+    margin-bottom: 18px;
+}
+
+/* ---------------- Banner section ends ----------------- */
+
+
+
+
+/* ------------- Categories section starts -------------- */
+
+.categories .box-container {
+    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.categories .box-container .box {
+    padding: 2rem;
+    background: #fff;
+    text-align: center;
+    border-radius: .5rem;
+    background-color: bisque;
+    box-shadow: var(--box-shadow);
+    transition: box-shadow 0.5s ease;
+}
+
+.categories .box-container .box:hover {
+    box-shadow: 1px 1px 10px 4px orangered;
+}
+
+
+.categories .box-container .box img {
+    margin: 1rem;
+    height: 10rem;
+}
+
+.categories .box-container .box h3 {
+    font-size: 1.5rem;
+    font-style: italic;
+    text-decoration: underline;
+}
+
+.categories .box-container .box p {
+    font-size: 1rem;
+    font-style: italic;
+    line-height: 1.5rem;
+    text-align: justify;
+    color: var(--black);
+}
+
+.categories .box-container .box a {
+    margin: 1rem;
+    font-size: 1rem;
+    transition: .7s;
+    cursor: pointer;
+    background: none
+    font-weight: bold;
+    font-style: italic;
+    color: var(--black);
+    padding: .7rem 2rem;
+    border-radius: .5rem;
+    display: inline-block;
+    border: .2rem solid var(--black);
+}
+
+.categories .box-container .box a:hover {
+    color: #fff;
+    background: orangered;
+}
+
+/* -------------- Categories section ends --------------- */
+
+
+
+
+/* -------------- Features section starts --------------- */
+
+section {
+    padding: 1rem 7%;
+}
+
+.heading {
+    padding: 1rem;
+    font-size: 2.4rem;
+    text-align: center;
+    color: var(--black);
+    padding-bottom: 3.5rem;
+}
+
+.heading span {
+    color: #fff;
+    padding: .5rem 3rem;
+    background: orangered;
+    display: inline-block;
+    font-family: Georgia, serif;
+    clip-path: polygon(100% 0, 93% 50%, 100% 99%, 0% 100%, 7% 50%, 0% 0%);
+}
+
+.features .box-container {
+    gap: 1.5rem;
+    display: grid;
+    border: 0px solid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.features .box-container .box {
+    background: #fff;
+    text-align: center;
+    padding: 1rem .5rem;
+    border: Opx solid red;
+    background-color: bisque;
+    box-shadow: var(--box-shadow);
+}
+
+.features .box-container .box:hover {
+    box-shadow: 1px 1px 10px 4px orangered;
+}
+
+.features .box-container .box h3 {
+    font-size: 1.7rem;
+    font-style: italic;
+    color: var(--green);
+    text-decoration: underline;
+}
+
+.features .box-container .box p {
+    font-size: 1rem;
+    line-height: 1.8;
+    font-style: italic;
+    text-align: justify;
+    padding-bottom: 1rem 0;
+    color: var(--black);
+}
+
+.features .box-container .box a {
+    margin: 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    background: none;
+    font-weight: bold;
+    font-style: italic;
+    color: var(--black);
+    padding: .7rem 2rem;
+    border-radius: .5rem;
+    transition: ease .5s;
+    display: inline-block;
+    border: .2rem solid var(--black);
+}
+
+.features .box-container .box a:hover {
+    color: #fff;
+    background: orangered;
+}
+
+/* -------------- Features section ends --------------- */
+
+
+
+
+/* -------------- Footer section starts --------------- */
+
+.footer {
+    display: flex;
+    background: #fff;
+    text-align: center;
+    flex-direction: column;
+    background-color: bisque;
+}
+
+.footer .box-container {
+    display: flex;
+    border: 0px solid;
+    justify-content: space-between;
+}
+
+.footer .box {
+    flex: 1;
+    padding: 20px;
+    border: 0px solid;
+    text-decoration: underline;
+}
+
+.footer .box-container .box h3 {
+    padding: 1rem 0;
+    font-size: 2rem;
+    font-style: italic;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.footer .box-container .box h3 i {
+    color: var(--green);
+}
+
+.footer .box-container .box .links {
+    display: block;
+    padding: 1rem 0;
+    font-size: 1.1rem;
+    color: var(--black);
+}
+
+.footer .box-container .box .links i {
+    color: orangered;
+    padding-right: .5rem;
+}
+
+.footer .box-container .box .links:hover i {
+    padding-right: 2rem;
+}
+
+.footer .box-container .box p {
+    padding: 1rem 0;
+    line-height: 1.8;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--black);
+}
+
+.footer .box-container .box .share a {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #eee;
+    font-size: 1.2rem;
+    border: 0px solid;
+    text-align: center;
+    margin-left: .2rem;
+    color: var(--black);
+    line-height: 2.5rem;
+    border-radius: .5rem;
+}
+
+.footer .box-container .box .share a:hover {
+    color: #fff;
+    background: orangered;
+}
+
+.footer .box-container .box .email {
+    width: 60%;
+    padding: 1rem;
+    margin: .3rem 0;
+    font-size: 1rem;
+    background: #eee;
+    color: var(--black);
+    border-radius: .4rem;
+    text-transform: none;
+}
+
+.footer .box-container .box .btn {
+    width: 60%;
+    padding: 1rem;
+    font-size: 1rem;
+    margin: .3rem 0;
+    cursor: pointer;
+    transition: .7s;
+    background: #eee;
+    font-style: italic;
+    color: var(--black);
+    text-transform: none;
+    border-radius: .4rem;
+}
+
+.footer .box-container .box .btn:hover {
+    color: #fff;
+    background: orangered;
+}
+
+.footer .credit {
+    padding: 1rem;
+    font-size: 2rem;
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--black);
+    padding-top: 2.5rem;
+    border-top: var(--border);
+}
+
+.footer .credit span {
+    color: orangered;
+    font-weight: bold;
+    font-size: 2.7rem;
+    text-decoration: underline;
+    font-family: 'Brush Script MT', cursive;
+}
+
+.footer .card {
+    width: 100%;
+    padding: 1.5rem;
+    border: 2px solid black;
+}
+
+.footer .box-container .card h4 {
+    color: orangered;
+    font-size: 1.7rem;
+    text-decoration: underline;
+    font-family: 'Brush Script MT', cursive;
+}
+
+#result-info {
+    margin-top: 15px;
+}
+
+#result-info p {
+    color: black;
+}
+
+/* -------------- Footer section ends --------------- */

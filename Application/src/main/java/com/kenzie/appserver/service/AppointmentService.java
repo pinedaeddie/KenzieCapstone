@@ -8,8 +8,6 @@ import com.kenzie.appserver.repositories.model.AppointmentRecord;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import com.kenzie.capstone.service.model.BookingData;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -27,6 +25,7 @@ public class AppointmentService {
 
     public AppointmentResponse createAppointment(AppointmentCreateRequest appointmentCreateRequest) {
 
+        // Validating the appointment create request
         if (appointmentCreateRequest == null) {
             throw new IllegalArgumentException("AppointmentCreateRequest cannot be null");
         }
@@ -45,47 +44,56 @@ public class AppointmentService {
         // Notifying the Lambda service about the new appointment
         lambdaServiceClient.createBooking(fromRecordToBookingData(record));
 
+        // Returning the response from the created record
         return fromRecordToResponse(record);
     }
 
     public AppointmentResponse getAppointmentById(String id) {
 
+        // Validating the appointment ID
         if (id == null) {
             throw new IllegalArgumentException("Appointment ID cannot be null");
         }
 
+        // Checking if the appointment is cached
         AppointmentRecord cachedRecord = cache.get(id);
         if (cachedRecord != null) {
             return fromRecordToResponse(cachedRecord);
         }
 
-        AppointmentRecord recordFromBackendService = appointmentRepository
-                .findById(id)
-                .orElse(null);
-
+        // Retrieving the appointment from the backend service
+        AppointmentRecord recordFromBackendService = appointmentRepository.findById(id).orElse(null);
         AppointmentResponse response = null;
 
+        // If found, cache the record and create response
         if (recordFromBackendService != null) {
             cache.add(recordFromBackendService.getAppointmentId(), recordFromBackendService);
             response = fromRecordToResponse(recordFromBackendService);
+            // If not found, Notify the Lambda service
+        } else {
+            lambdaServiceClient.getBooking(id);
         }
 
-        // Notifying the Lambda service about the appointment
-        lambdaServiceClient.getBooking(id);
+        // Returning the response
         return response;
     }
 
     public Iterable<AppointmentRecord> getAllAppointments() {
+        // Retrieving and returning all appointments from the repository
         return appointmentRepository.findAll();
     }
 
+
     public AppointmentRecord updateAppointmentById(String appointmentId, AppointmentCreateRequest appointmentCreateRequest) {
 
-        if (appointmentId == null) {
-            throw new IllegalArgumentException("Appointment ID cannot be null");
+        // Validating the appointment ID
+        if (appointmentId == null || appointmentId.isEmpty()) {
+            throw new IllegalArgumentException("Appointment ID cannot be null or empty");
         }
 
+        // Retrieving the existing appointment record
         AppointmentRecord record = appointmentRepository.findById(appointmentId).orElseThrow(() -> new IllegalArgumentException("Appointment ID does not exist"));
+
         // Updating the existing record with new data
         record.setPatientFirstName(appointmentCreateRequest.getPatientFirstName());
         record.setPatientLastName(appointmentCreateRequest.getPatientLastName());
@@ -98,7 +106,6 @@ public class AppointmentService {
         appointmentRepository.save(record);
 
         // Creating BookingData and update booking through LambdaServiceClient
-
         BookingData bookingData = new BookingData();
         bookingData.setId(record.getAppointmentId());
         bookingData.setBookingId(record.getBookingId());
@@ -119,6 +126,7 @@ public class AppointmentService {
 
     public AppointmentRecord deleteAppointmentById(String id) {
 
+        // Validating the appointment ID
         if (id == null) {
             throw new IllegalArgumentException("Appointment ID cannot be null");
         }
@@ -127,7 +135,7 @@ public class AppointmentService {
         AppointmentRecord deletedRecord = appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment not found for ID: " + id));
 
-        // Deleting the record
+        // Deleting the record from the repository and cache
         appointmentRepository.deleteById(id);
         cache.evict(id);
 
@@ -137,8 +145,10 @@ public class AppointmentService {
             throw new RuntimeException("Failed to delete booking in Lambda service");
         }
 
+        // Returning the deleted record
         return deletedRecord;
     }
+
     public void deleteAllAppointments(){
         appointmentRepository.deleteAll();
     }
