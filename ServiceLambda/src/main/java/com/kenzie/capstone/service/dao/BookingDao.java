@@ -7,7 +7,6 @@ import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.google.common.collect.ImmutableMap;
 import com.kenzie.capstone.service.model.BookingRecord;
 
-
 public class BookingDao {
 
     private final DynamoDBMapper mapper;
@@ -46,7 +45,6 @@ public class BookingDao {
     public boolean deleteBookingById(String id) {
 
         BookingRecord bookingRecord = getBookingById(id);
-
         if (bookingRecord == null) {
             return false;
         }

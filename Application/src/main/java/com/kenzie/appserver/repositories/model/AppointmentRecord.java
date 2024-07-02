@@ -68,13 +68,9 @@ public class AppointmentRecord {
     public void setGender(String gender) { this.gender = gender;}
 
     @DynamoDBAttribute(attributeName = "appointmentDate")
-    public String getAppointmentDate() {
-        return appointmentDate;
-    }
+    public String getAppointmentDate() {return appointmentDate;}
 
-    public void setAppointmentDate(String appointmentDate) {
-        this.appointmentDate = appointmentDate;
-    }
+    public void setAppointmentDate(String appointmentDate) {this.appointmentDate = appointmentDate;}
 
     @DynamoDBAttribute(attributeName = "appointmentTime")
     public String getAppointmentTime() {
@@ -83,6 +79,20 @@ public class AppointmentRecord {
 
     public void setAppointmentTime(String appointmentTime) {
         this.appointmentTime = appointmentTime;
+    }
+
+    @Override
+    public String toString() {
+        return "AppointmentRecord{" +
+                "appointmentId='" + appointmentId + '\'' +
+                ", bookingId='" + bookingId + '\'' +
+                ", patientFirstName='" + patientFirstName + '\'' +
+                ", patientLastName='" + patientLastName + '\'' +
+                ", providerName='" + providerName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", appointmentDate='" + appointmentDate + '\'' +
+                ", appointmentTime='" + appointmentTime + '\'' +
+                '}';
     }
 
     @Override

@@ -2,45 +2,44 @@ package com.kenzie.appserver.controller.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class AppointmentCreateRequest {
 
-    @NotEmpty
+    @NotNull
+    @NotBlank
     @JsonProperty("patientFirstName")
     private String patientFirstName;
 
-    @NotEmpty
+    @NotNull
+    @NotBlank
     @JsonProperty("patientLastName")
     private String patientLastName;
 
-    @NotEmpty
+    @NotBlank
     @JsonProperty("providerName")
     private String providerName;
 
-    @NotEmpty
+    @NotBlank
     @JsonProperty("gender")
     private String gender;
 
-    @NotNull
+    @NotBlank
     @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty("appointmentDate")
     private String appointmentDate;
 
     @NotNull
+    @NotBlank
     @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     @JsonProperty("appointmentTime")
     private String appointmentTime;
 
 
-    public String getPatientFirstName() {
-        return patientFirstName;
-    }
+    public String getPatientFirstName() {return patientFirstName;}
 
-    public void setPatientFirstName(String patientFirstName) {
-        this.patientFirstName = patientFirstName;
-    }
+    public void setPatientFirstName(String patientFirstName) {this.patientFirstName = patientFirstName;}
 
     public String getPatientLastName() {
         return patientLastName;
@@ -66,13 +65,9 @@ public class AppointmentCreateRequest {
         this.gender = gender;
     }
 
-    public String getAppointmentDate() {
-        return appointmentDate;
-    }
+    public String getAppointmentDate() {return appointmentDate;}
 
-    public void setAppointmentDate(String appointmentDate) {
-        this.appointmentDate = appointmentDate;
-    }
+    public void setAppointmentDate(String appointmentDate) {this.appointmentDate = appointmentDate;}
 
     public String getAppointmentTime() {return appointmentTime;}
 

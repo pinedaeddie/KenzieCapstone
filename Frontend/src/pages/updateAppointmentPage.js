@@ -20,7 +20,7 @@ class UpdateAppointmentPage extends BaseClass {
 
     async mount() {
         this.client = new AppointmentClient();
-        document.getElementById('update-appointment-form').addEventListener('submit', this.onUpdateAppointment);
+        document.getElementById('update-appointment-form').addEventListener('submit', this.onUpdateAppointmentById);
         this.dataStore.addChangeListener(this.renderAppointment)
     }
 
@@ -33,16 +33,16 @@ class UpdateAppointmentPage extends BaseClass {
 
         if (appointmentRecord) {
             resultArea.innerHTML = `
-                <h2>Appointment Details</h2>
-                <div>ID: ${appointmentRecord.appointmentId}</div>
-                <div>Patient Name: ${appointmentRecord.patientFirstName} ${appointmentRecord.patientLastName}</div>
-                <div>Provider Name: ${appointmentRecord.providerName}</div>
-                <div>Gender: ${appointmentRecord.gender}</div>
-                <div>Appointment Date: ${appointmentRecord.appointmentDate}</div>
-                <div>Appointment Time: ${appointmentRecord.appointmentTime}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>ID:</strong> ${appointmentRecord.appointmentId}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Patient Name:</strong> ${appointmentRecord.patientFirstName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Patient Last Name:</strong> ${appointmentRecord.patientLastName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Provider Name:</strong> ${appointmentRecord.providerName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Gender:</strong> ${appointmentRecord.gender}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Appointment Date:</strong> ${appointmentRecord.appointmentDate}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Appointment Time:</strong> ${appointmentRecord.appointmentTime}</div>
             `;
         } else {
-            resultArea.innerHTML = "No Appointment Details Available";
+            resultArea.innerHTML = `<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> No Appointment Details Available </span>`;
         }
     }
 
@@ -53,18 +53,32 @@ class UpdateAppointmentPage extends BaseClass {
         // Prevent the page from refreshing on form submit
         event.preventDefault();
 
-        const appointmentId = document.getElementById('appointment-id').value;
+        const appointmentId = document.getElementById('appointment-id').value.trim();
+        const patientFirstName = document.getElementById('first-name').value.trim();
+        const patientLastName = document.getElementById('last-name').value.trim();
+        const providerName = document.getElementById('provider-name').value.trim();
+        const gender = document.getElementById('gender').value.trim();
+        const appointmentDate = document.getElementById('appointment-date').value.trim();
+        const appointmentTime = document.getElementById('appointment-time').value.trim();
+
+        if (!appointmentId || !patientFirstName || !patientLastName || !providerName || !gender || !appointmentDate || !appointmentTime) {
+            this.errorHandler("Error updating appointment! Try again...");
+            this.errorHandler("All fields must be filled out and appointment ID must be valid.");
+            return;
+        }
+
         const request = {
-            patientFirstName: document.getElementById('first-name').value,
-            patientLastName: document.getElementById('last-name').value,
-            providerName: document.getElementById('provider-name').value,
-            gender: document.getElementById('gender').value,
-            appointmentDate: document.getElementById('appointment-date').value,
-            appointmentTime: document.getElementById('appointment-time').value
+            patientFirstName,
+            patientLastName,
+            providerName,
+            gender,
+            appointmentDate,
+            appointmentTime
         };
 
+        this.showMessage(`Request successfully submitted for update, please wait..`);
         try {
-            const updatedAppointment = await this.client.updateAppointmentById(appointmentId, request, this.errorHandler);
+            const updatedAppointment = await this.client.updateAppointmentById(appointmentId, request);
             this.dataStore.set('appointmentRecord', updatedAppointment);
 
             if (updatedAppointment) {
@@ -73,7 +87,11 @@ class UpdateAppointmentPage extends BaseClass {
                 this.errorHandler("Error updating appointment! Try again...");
             }
         } catch (error) {
-            this.errorHandler("Error updating appointment! Try again...");
+            if(error.response && error.response.status == 400) {
+                this.errorHandler("Invalid Request!");
+            } else {
+                this.errorHandler("Error updating appointment! Try again...");
+            }
         }
     }
 }

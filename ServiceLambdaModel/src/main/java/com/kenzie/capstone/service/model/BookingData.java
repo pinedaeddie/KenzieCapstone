@@ -14,7 +14,8 @@ public class BookingData {
     private String appointmentDate;
     private String appointmentTime;
 
-    public BookingData(String id, String bookingId, String patientName, String patientLastName, String providerName, String gender, boolean reminderSent, String appointmentDate, String appointmentTime) {
+    public BookingData(String id, String bookingId, String patientName, String patientLastName, String providerName,
+                       String gender, boolean reminderSent, String appointmentDate, String appointmentTime) {
         this.id = id;
         this.bookingId = bookingId;
         this.patientName = patientName;

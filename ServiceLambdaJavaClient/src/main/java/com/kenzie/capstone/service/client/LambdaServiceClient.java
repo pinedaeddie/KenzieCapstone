@@ -19,29 +19,30 @@ public class LambdaServiceClient {
 
     public void createBooking(BookingData bookingData) {
         EndpointUtility endpointUtility = new EndpointUtility();
+
         String request;
         try {
             request = mapper.writeValueAsString(bookingData);
         } catch (JsonProcessingException e) {
-            throw new ApiGatewayException("Unable to serialize request: " + e);
+            throw new ApiGatewayException("Unable to serialize request: " + e.getMessage());
         }
-        String response = endpointUtility.postEndpoint(CREATE_BOOKING_ENDPOINT, request);
 
+        String response = endpointUtility.postEndpoint(CREATE_BOOKING_ENDPOINT, request);
         try {
             mapper.readValue(response, BookingData.class);
         } catch (Exception e) {
-            throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
+            throw new ApiGatewayException("Unable to map deserialize JSON: " + e.getMessage());
         }
     }
 
     public void getBooking (String id) {
         EndpointUtility endpointUtility = new EndpointUtility();
-        String response = endpointUtility.getEndpoint(GET_BOOKING_ENDPOINT.replace("{id}", id));
 
+        String response = endpointUtility.getEndpoint(GET_BOOKING_ENDPOINT.replace("{id}", id));
         try {
             mapper.readValue(response, BookingData.class);
         } catch (Exception e) {
-            throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
+            throw new ApiGatewayException("Unable to map deserialize JSON: " + e.getMessage());
         }
     }
 
@@ -70,12 +71,12 @@ public class LambdaServiceClient {
 
     public boolean deleteBooking(String id) {
         EndpointUtility endpointUtility = new EndpointUtility();
-        String request;
 
+        String request;
         try {
             request = mapper.writeValueAsString(id);
         } catch(JsonProcessingException e) {
-            throw new ApiGatewayException("Unable to serialize request: " + e);
+            throw new ApiGatewayException("Unable to serialize request: " + e.getMessage());
         }
 
         String response = endpointUtility.postEndpoint(DELETE_BOOKING_ENDPOINT.replace("{id}", id), request);
@@ -83,7 +84,7 @@ public class LambdaServiceClient {
         try {
             outcome = mapper.readValue(response, Boolean.class);
         } catch (Exception e) {
-            throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
+            throw new ApiGatewayException("Unable to map deserialize JSON: " + e.getMessage());
         }
         return outcome;
     }

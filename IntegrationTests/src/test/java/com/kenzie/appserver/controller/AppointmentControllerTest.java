@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
 import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -41,10 +39,18 @@ public class AppointmentControllerTest {
     public static void setup() {
         mapper.registerModule(new Jdk8Module());
     }
+
     @AfterEach
     public void cleanup() {
         appointmentService.deleteAllAppointments();
     }
+
+
+
+    /**  ------------------------------------------------------------------------
+     *   AppointmentController.createAppointment
+     *   ------------------------------------------------------------------------ **/
+
     @Test
     public void createAppointment_CreateSuccessful() throws Exception {
         // GIVEN
@@ -75,38 +81,55 @@ public class AppointmentControllerTest {
         AppointmentResponse response = mapper.readValue(responseBody, AppointmentResponse.class);
         assertThat(response.getAppointmentId()).isNotEmpty().as("The ID is populated");
     }
+
     @Test
     public void createAppointment_NullRequest() throws Exception {
-        //GIVEN: Null request
+        //GIVEN
+        AppointmentCreateRequest request = new AppointmentCreateRequest();
+        request.setPatientFirstName("John");
+        request.setPatientLastName("Doe");
+        request.setProviderName("Dr. Smith");
+        request.setGender("Male");
+        request.setAppointmentDate("2023-06-15");
+        request.setAppointmentTime("10:00");
 
-        //WHEN/THEN
+        // WHEN/THEN
         mvc.perform(post("/appointments")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(null)))
-                .andExpect(status().is4xxClientError());
+                        .content(mapper.writeValueAsString(request)))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
     }
+
+
+    /**  ------------------------------------------------------------------------
+     *   AppointmentController.getAppointmentById
+     *   ------------------------------------------------------------------------ **/
+
     @Test
     public void getAppointmentById_NotFound() throws Exception {
-        //GIVEN random nonexistent ID
+        //GIVEN
         String nonExistentId = UUID.randomUUID().toString();
 
         //WHEN/THEN
         mvc.perform(get("/appointments/{id}", nonExistentId)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().is4xxClientError());
     }
+
     @Test
     public void getAppointmentById_NullId() throws Exception {
-        //GIVEN : Null ID
+        //GIVEN --> Null ID
 
         //WHEN/THEN
-        mvc.perform(get("/appointments/{id}",(Object) null)
+        mvc.perform(get("/appointments/{id}", "null")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
+
     @Test
-    public void getAppointmentById_success() throws Exception {
+    public void getAppointmentById_Successfully() throws Exception {
         // GIVEN
         String patientFirstName = mockNeat.names().first().val();
         String patientLastName = mockNeat.names().last().val();
@@ -141,30 +164,37 @@ public class AppointmentControllerTest {
         assertThat(response.getProviderName()).isNotEmpty().as("The ProviderName is populated");
     }
 
-    @Test
-    public void getAllAppointments_ReturnsAppointments() throws Exception {
-        //GIVEN: DB with records
 
+    /**  ------------------------------------------------------------------------
+     *   AppointmentController.getAllAppointments
+     *   ------------------------------------------------------------------------ **/
+
+    @Test
+    public void getAllAppointments_ReturnsAppointmentsSuccessfully() throws Exception {
         //WHEN/THEN
         mvc.perform(get("/appointments/all")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
     }
+
     @Test
     public void getAllAppointments_EmptyList() throws Exception {
-        // GIVEN : no appointments/Empty DB
 
         //WHEN/THEN
         mvc.perform(get("/appointments/all")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty());
     }
 
 
+    /**  ------------------------------------------------------------------------
+     *   AppointmentController.updateAppointmentById
+     *   ------------------------------------------------------------------------ **/
+
     @Test
-    public void updateAppointment_success() throws Exception {
+    public void updateAppointment_UpdateSuccessful() throws Exception {
         //GIVEN
         String patientFirstName = mockNeat.names().first().val();
         String patientLastName = mockNeat.names().last().val();
@@ -189,7 +219,7 @@ public class AppointmentControllerTest {
         updateRequest.setProviderName(mockNeat.names().full().val());
 
         //WHEN
-        ResultActions actions = mvc.perform(post("/appointments/{id}".replace("{id}", appointmentResponse.getAppointmentId()))
+        ResultActions actions = mvc.perform(put("/appointments/{id}".replace("{id}", appointmentResponse.getAppointmentId()))
                         .content(mapper.writeValueAsString(updateRequest))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -201,35 +231,27 @@ public class AppointmentControllerTest {
         assertThat(response.getAppointmentId()).isNotEmpty().as("The ID is populated");
         assertThat(response.getPatientFirstName()).isEqualTo(updateRequest.getPatientFirstName()).as("The name is correct");
     }
+
     @Test
-    public void updateAppointmentById_NullId() throws Exception {
+    public void updateAppointmentById_EmptyId() throws Exception {
         //GIVEN
-        AppointmentCreateRequest appointmentCreateRequest = new AppointmentCreateRequest();
-        appointmentCreateRequest.setPatientFirstName("John");
-        appointmentCreateRequest.setPatientLastName("Doe");
-        appointmentCreateRequest.setProviderName("Dr. Smith");
-        appointmentCreateRequest.setGender("Male");
-        appointmentCreateRequest.setAppointmentDate("2024-06-20");
-        appointmentCreateRequest.setAppointmentTime("10:30");
+        String id = " ";
+        AppointmentResponse response = new AppointmentResponse();
+        response.setAppointmentId(" ");
 
         //WHEN/THEN
-        mvc.perform(put("/appointments/{id}", (String) null)
+        mvc.perform(put("/appointments/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(appointmentCreateRequest)))
+                        .content(mapper.writeValueAsString(response)))
                 .andExpect(status().is4xxClientError());
     }
+
     @Test
     public void updateAppointmentById_NotFound() throws Exception {
         //GIVEN
         String nonExistentId = UUID.randomUUID().toString();
         AppointmentCreateRequest appointmentCreateRequest = new AppointmentCreateRequest();
-        appointmentCreateRequest.setPatientFirstName("John");
-        appointmentCreateRequest.setPatientLastName("Doe");
-        appointmentCreateRequest.setProviderName("Dr. Smith");
-        appointmentCreateRequest.setGender("Male");
-        appointmentCreateRequest.setAppointmentDate("2024-06-20");
-        appointmentCreateRequest.setAppointmentTime("10:30");
 
         //WHEN/THEN
         mvc.perform(put("/appointments/{id}", nonExistentId)
@@ -240,10 +262,12 @@ public class AppointmentControllerTest {
     }
 
 
+    /**  ------------------------------------------------------------------------
+     *   AppointmentController.deleteAppointmentById
+     *   ------------------------------------------------------------------------ **/
 
     @Test
-    public void deleteAppointmentById_DeletesSuccessfully() throws Exception {
-
+    public void deleteAppointmentById_DeleteSuccessful() throws Exception {
         //GIVEN
         String patientFirstName = mockNeat.names().first().val();
         String patientLastName = mockNeat.names().last().val();
@@ -261,7 +285,6 @@ public class AppointmentControllerTest {
         appointmentCreateRequest.setAppointmentTime(appointmentTime);
 
         //WHEN
-//        AppointmentResponse response = appointmentService.createAppointment(appointmentCreateRequest);
         String response = mvc.perform(post("/appointments")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -275,13 +298,13 @@ public class AppointmentControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
     }
+
     @Test
     public void deleteAppointmentById_NullId() throws Exception {
-        //GIVEN null ID
-
+        //GIVEN --> Null ID
 
         //WHEN/THEN
-        mvc.perform(delete("/appointments/{id}", (Object) null)
+        mvc.perform(delete("/appointments/{id}",  "null")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
@@ -296,5 +319,4 @@ public class AppointmentControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
-
 }

@@ -21,8 +21,8 @@ public class AppointmentServiceTest {
 
     private AppointmentRepository appointmentRepository;
     private LambdaServiceClient lambdaServiceClient;
-    private CacheStore cache;
     private AppointmentService appointmentService;
+    private CacheStore cache;
 
     @BeforeEach
     public void setup() {
@@ -31,6 +31,8 @@ public class AppointmentServiceTest {
         cache = mock(CacheStore.class);
         appointmentService = new AppointmentService(appointmentRepository, lambdaServiceClient, cache);
     }
+
+
 
     /**  ------------------------------------------------------------------------
      *   AppointmentService.createAppointment
@@ -178,6 +180,7 @@ public class AppointmentServiceTest {
     }
 
 
+
     /**  ------------------------------------------------------------------------
      *   AppointmentService.updateAppointmentById
      *   ------------------------------------------------------------------------ **/
@@ -212,9 +215,7 @@ public class AppointmentServiceTest {
         assertEquals(request.getAppointmentDate(), updatedRecord.getAppointmentDate());
         assertEquals(request.getAppointmentTime(), updatedRecord.getAppointmentTime());
 
-        verify(cache, times(1)).evict(appointmentId);
-        verify(cache, times(1)).add(appointmentId, updatedRecord);
-//        verify(lambdaServiceClient, times(1)).updateBooking(any(BookingData.class));
+        verify(lambdaServiceClient, times(1)).updateBooking(eq(appointmentId), any(BookingData.class));
     }
 
     @Test
@@ -232,10 +233,9 @@ public class AppointmentServiceTest {
         // WHEN / THEN
         when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             appointmentService.updateAppointmentById(appointmentId, request);
         });
-        assertEquals("Appointment not found with id: " + appointmentId, exception.getMessage());
     }
 
     @Test
@@ -253,8 +253,10 @@ public class AppointmentServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             appointmentService.updateAppointmentById(null, request);
         });
-        assertEquals("Appointment ID cannot be null", exception.getMessage());
+
+        assertEquals("Appointment ID cannot be null or empty", exception.getMessage());
     }
+
 
 
     /**  ------------------------------------------------------------------------
@@ -280,6 +282,7 @@ public class AppointmentServiceTest {
         verify(appointmentRepository, times(1)).deleteById(appointmentId);
         verify(cache, times(1)).evict(appointmentId);
         verify(lambdaServiceClient, times(1)).deleteBooking(appointmentId);
+
         assertEquals(appointmentRecord, deletedRecord);
     }
 

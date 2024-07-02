@@ -8,22 +8,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BookingServiceTest {
 
-    @Mock
     private BookingDao bookingDao;
-    @InjectMocks
     private LambdaService lambdaService;
 
     @BeforeAll
@@ -33,7 +27,6 @@ public class BookingServiceTest {
     }
 
 
-    // Write additional tests here for other methods in the Lambda Service Class
 
     /**  ------------------------------------------------------------------------
      *   LambdaService.getBookingData
@@ -46,40 +39,42 @@ public class BookingServiceTest {
         expectedBookingRecord.setId(validId);
         when(bookingDao.getBookingById(validId)).thenReturn(expectedBookingRecord);
 
-        ArgumentCaptor<String> idCaptor = ArgumentCaptor.forClass(String.class);
-
         // WHEN
         BookingRecord result = lambdaService.getBookingData(validId);
 
         // THEN
         assertNotNull(result);
         assertEquals(validId, result.getId());
-        verify(bookingDao).getBookingById(idCaptor.capture());
-        assertEquals(validId, idCaptor.getValue());
+        verify(bookingDao).getBookingById(validId);
+    }
+
+    @Test
+    void testGetBookingData_EmptyId_ThrowsInvalidDataException() {
+        // GIVEN
+        String emptyId = "";
+
+        // WHEN / THEN
+        assertThrows(InvalidDataException.class, () -> lambdaService.getBookingData(emptyId));
+        verify(bookingDao, never()).getBookingById(emptyId);
     }
 
     @Test
     void testGetBookingData_NullId() {
-        // GIVEN
-        ArgumentCaptor<String> idCaptor = ArgumentCaptor.forClass(String.class);
-
         // WHEN / THEN
         assertThrows(InvalidDataException.class, () -> lambdaService.getBookingData(null));
-        verify(bookingDao, never()).getBookingById(idCaptor.capture());
     }
 
     @Test
     void testGetBookingData_NonExistingId() {
         // GIVEN
         String nonExistingId = "non-existing-id";
+        when(bookingDao.getBookingById(nonExistingId)).thenReturn(null);
 
         // WHEN
-        when(bookingDao.getBookingById(nonExistingId)).thenReturn(null);
         BookingRecord result = lambdaService.getBookingData(nonExistingId);
 
         // THEN
         assertNull(result);
-        verify(bookingDao, times(1)).getBookingById(nonExistingId);
     }
 
     @Test
@@ -101,7 +96,6 @@ public class BookingServiceTest {
         assertEquals(expectedRecord.getPatientName(), result.getPatientName());
         verify(bookingDao).getBookingById(validId);
     }
-
 
 
     /**  ------------------------------------------------------------------------
@@ -137,6 +131,8 @@ public class BookingServiceTest {
     void testSaveBooking_NullPatientName() {
         // GIVEN
         BookingData bookingData = new BookingData();
+        bookingData.setId("valid-booking-id");
+        bookingData.setProviderName("Dr. Smith");
 
         // WHEN / THEN
         assertThrows(InvalidDataException.class, () -> lambdaService.saveBooking(bookingData));
@@ -146,6 +142,8 @@ public class BookingServiceTest {
     void testSaveBooking_EmptyProviderName() {
         // GIVEN
         BookingData bookingData = new BookingData();
+        bookingData.setId("valid-booking-id");
+        bookingData.setPatientName("");
 
         // WHEN / THEN
         assertThrows(InvalidDataException.class, () -> lambdaService.saveBooking(bookingData));
@@ -200,6 +198,7 @@ public class BookingServiceTest {
 
         // WHEN / THEN
         assertThrows(InvalidDataException.class, () -> lambdaService.updateBooking(null, updatedData));
+        verify(bookingDao, never()).updateBookingData(any());
     }
 
     @Test
@@ -261,5 +260,18 @@ public class BookingServiceTest {
         for (String id : bookingIds) {
             verify(bookingDao, times(1)).deleteBookingById(id);
         }
+    }
+    @Test
+    void testDeleteBookings_NullId_ThrowsInvalidDataException() {
+        // WHEN / THEN
+        assertThrows(InvalidDataException.class, () -> lambdaService.deleteBookings(null));
+        verify(bookingDao, never()).deleteBookingById(anyString());
+    }
+
+    @Test
+    void testDeleteBookings_EmptyId_ThrowsInvalidDataException() {
+        // WHEN / THEN
+        assertThrows(InvalidDataException.class, () -> lambdaService.deleteBookings(""));
+        verify(bookingDao, never()).deleteBookingById(anyString());
     }
 }

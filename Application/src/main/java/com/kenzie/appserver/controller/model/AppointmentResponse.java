@@ -1,11 +1,13 @@
 package com.kenzie.appserver.controller.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AppointmentResponse {
 
     @JsonProperty("appointmentId")
@@ -55,9 +57,7 @@ public class AppointmentResponse {
         return providerName;
     }
 
-    public void setProviderName(String providerName) {
-        this.providerName = providerName;
-    }
+    public void setProviderName(String providerName) {this.providerName = providerName;}
 
     public String getGender() {
         return gender;

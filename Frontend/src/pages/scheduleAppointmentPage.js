@@ -33,16 +33,16 @@ class ScheduleAppointmentPage extends BaseClass {
 
         if (appointmentRecord) {
             resultArea.innerHTML = `
-                <h2>Appointment Details</h2>
-                <div>ID: ${appointmentRecord.appointmentId}</div>
-                <div>Patient Name: ${appointmentRecord.patientFirstName} ${appointmentRecord.patientLastName}</div>
-                <div>Provider Name: ${appointmentRecord.providerName}</div>
-                <div>Gender: ${appointmentRecord.gender}</div>
-                <div>Appointment Date: ${appointmentRecord.appointmentDate}</div>
-                <div>Appointment Time: ${appointmentRecord.appointmentTime}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>ID:</strong> ${appointmentRecord.appointmentId}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Patient Name:</strong> ${appointmentRecord.patientFirstName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Patient Last Name:</strong> ${appointmentRecord.patientLastName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Provider Name:</strong> ${appointmentRecord.providerName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Gender:</strong> ${appointmentRecord.gender}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Appointment Date:</strong> ${appointmentRecord.appointmentDate}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Appointment Time:</strong> ${appointmentRecord.appointmentTime}</div>
             `;
         } else {
-            resultArea.innerHTML = "No Appointment Details Available";
+            resultArea.innerHTML = `<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> No Appointment Details Available </span>`;
         }
     }
 
@@ -53,15 +53,29 @@ class ScheduleAppointmentPage extends BaseClass {
         // Prevent the page from refreshing on form submit
         event.preventDefault();
 
+        const patientFirstName = document.getElementById('first-name').value.trim();
+        const patientLastName = document.getElementById('last-name').value.trim();
+        const providerName = document.getElementById('provider-name').value.trim();
+        const gender = document.getElementById('gender').value.trim();
+        const appointmentDate = document.getElementById('appointment-date').value.trim();
+        const appointmentTime = document.getElementById('appointment-time').value.trim();
+
+        if (!patientFirstName || !patientLastName || !providerName || !gender || !appointmentDate || !appointmentTime) {
+            this.errorHandler("All fields must be filled out.");
+            this.errorHandler("Error creating appointment! Try again...");
+            return;
+        }
+
         const request = {
-            patientFirstName: document.getElementById('first-name').value,
-            patientLastName: document.getElementById('last-name').value,
-            providerName: document.getElementById('provider-name').value,
-            gender: document.getElementById('gender').value,
-            appointmentDate: document.getElementById('appointment-date').value,
-            appointmentTime: document.getElementById('appointment-time').value
+            patientFirstName,
+            patientLastName,
+            providerName,
+            gender,
+            appointmentDate,
+            appointmentTime
         };
 
+        this.showMessage(`Request successfully submitted for creation, please wait..`);
         try {
             const createdAppointment = await this.client.createAppointment(request, this.errorHandler);
             this.dataStore.set('appointmentRecord', createdAppointment);

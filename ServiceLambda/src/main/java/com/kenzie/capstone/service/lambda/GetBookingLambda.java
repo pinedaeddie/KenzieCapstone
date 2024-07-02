@@ -38,7 +38,7 @@ public class GetBookingLambda implements RequestHandler<APIGatewayProxyRequestEv
         if (id == null || id.length() == 0) {
             return response
                     .withStatusCode(400)
-                    .withBody("Booking Id is invalid");
+                    .withBody("Booking ID is invalid");
         }
 
         try {

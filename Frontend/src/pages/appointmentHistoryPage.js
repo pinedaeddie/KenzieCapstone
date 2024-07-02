@@ -34,31 +34,31 @@ class AppointmentHistoryPage extends BaseClass {
         const appointmentRecord = this.dataStore.get("appointmentRecord");
         const appointmentList = this.dataStore.get("appointmentList");
 
-        if(appointmentRecord) {
+        if (appointmentRecord) {
             resultArea.innerHTML = `
-                <h2>Appointment Details</h2>
-                <div>ID: ${appointmentRecord.appointmentId}</div>
-                <div>Patient Name: ${appointmentRecord.patientFirstName} ${appointmentRecord.patientLastName}</div>
-                <div>Provider Name: ${appointmentRecord.providerName}</div>
-                <div>Gender: ${appointmentRecord.gender}</div>
-                <div>Appointment Date: ${appointmentRecord.appointmentDate}</div>
-                <div>Appointment Time: ${appointmentRecord.appointmentTime}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>ID:</strong> ${appointmentRecord.appointmentId}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Patient Name:</strong> ${appointmentRecord.patientFirstName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Patient Last Name:</strong> ${appointmentRecord.patientLastName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Provider Name:</strong> ${appointmentRecord.providerName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Gender:</strong> ${appointmentRecord.gender}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Appointment Date:</strong> ${appointmentRecord.appointmentDate}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Appointment Time:</strong> ${appointmentRecord.appointmentTime}</div>
             `;
         } else if (appointmentList) {
-            resultArea.innerHTML = '<h2>All Appointments</h2>';
             appointmentList.forEach(appointment => {
                 resultArea.innerHTML += `
-                    <div>ID: ${appointment.appointmentId}</div>
-                    <div>Patient Name: ${appointment.patientFirstName} ${appointment.patientLastName}</div>
-                    <div>Provider Name: ${appointment.providerName}</div>
-                    <div>Gender: ${appointment.gender}</div>
-                    <div>Appointment Date: ${appointment.appointmentDate}</div>
-                    <div>Appointment Time: ${appointment.appointmentTime}</div>
-                    <hr>
-                `;
+                <div style="font-size: 1.4em; font-style: italic;"><strong>ID:</strong> ${appointment.appointmentId}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Patient Name:</strong> ${appointment.patientFirstName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Patient Last Name:</strong> ${appointment.patientLastName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Provider Name:</strong> ${appointment.providerName}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Gender:</strong> ${appointment.gender}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Appointment Date:</strong> ${appointment.appointmentDate}</div>
+                <div style="font-size: 1.4em; font-style: italic;"><strong>Appointment Time:</strong> ${appointment.appointmentTime}</div>
+                <br>
+            `;
             });
         } else {
-            resultArea.innerHTML = "No Appointments Found";
+            resultArea.innerHTML = `<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> No Appointments Found </span>`;
         }
     }
 
@@ -69,15 +69,26 @@ class AppointmentHistoryPage extends BaseClass {
         // Prevent the page from refreshing on form submit
         event.preventDefault();
 
-        const appointmentId = document.getElementById("find-appointmentId").value;
+        const appointmentId = document.getElementById("find-appointmentId").value.trim();
 
+        if (!appointmentId) {
+            this.errorHandler("Invalid input. Please provide a valid appointment ID.");
+            this.errorHandler("Error retrieving appointment! Try again...");
+            return;
+        }
+
+        this.showMessage("Retrieving Appointment, please wait..");
         try {
-            if (!appointmentId) throw new Error("Invalid input. Please provide an ID");
-            const appointmentRecord = await this.client.getAppointmentById(appointmentId, this.errorHandler);
-            this.dataStore.set("appointmentRecord", appointmentRecord);
-            this.dataStore.set("appointmentList", null);
-            this.showMessage(`Appointment found for ID: ${appointmentId}`);
+            const appointmentRecord = await this.client.getAppointmentById(appointmentId);
+            if (appointmentRecord) {
+                this.dataStore.set("appointmentRecord", appointmentRecord);
+                this.showMessage(`Appointment found for ID: ${appointmentId}`);
+            } else {
+                this.dataStore.set("appointmentRecord", null);
+                this.errorHandler("No appointment found with the given ID.");
+            }
         } catch (error) {
+            this.dataStore.set("appointmentRecord", null);
             this.errorHandler("Error retrieving appointment! Try again...");
         }
     }
@@ -87,12 +98,16 @@ class AppointmentHistoryPage extends BaseClass {
         // Prevent the page from refreshing on form submit
         event.preventDefault();
 
+        this.showMessage("Retrieving all booked appointments! please wait..");
         try {
             const appointmentList = await this.client.getAllAppointments(this.errorHandler);
+            if (appointmentList.length == 0) {
+                throw new Error("No booked appointments available.");
+            }
             this.dataStore.set("appointmentList", appointmentList);
-            this.dataStore.set("appointmentRecord", null);
             this.showMessage(`Appointments retrieved successfully!`);
         } catch (error) {
+            this.dataStore.set("appointmentRecord", null);
             this.errorHandler("Error retrieving appointments! Try again...");
         }
     }
