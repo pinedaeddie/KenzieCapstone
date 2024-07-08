@@ -44,14 +44,14 @@ body {
     font-style: italic;
     align-items: center;
     transition: ease .5s;
-    background-color: bisque;
+    background-color: #B0C4DE;
     justify-content: space-between;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header .logo {
     font-size: 3.2em;
-    color: orangered;
+    color: darkorange;
     font-weight: bold;
     text-decoration: none;
     font-family: 'Brush Script MT', cursive;
@@ -92,12 +92,12 @@ body {
     color: var(--black);
     transition: ease .5s;
     border: 2px solid black;
-    background-color: bisque;
+    background-color: #B0C4DE;
 }
 
 .header .icons div:hover {
     color: #fff;
-    color: orangered;
+    color: darkorange;
 }
 
 .icons {
@@ -118,7 +118,7 @@ body {
     width: 20rem;
     height: 3rem;
     overflow: hidden;
-    background-color: bisque;
+    background-color: #B0C4DE;
     position: absolute;
     border-radius: .5rem;
     box-shadow: var(--box-shadow);
@@ -155,7 +155,7 @@ body {
 }
 
 .header .search-form label:hover {
-    color: orangered;
+    color: darkorange;
 }
 
 
@@ -172,7 +172,7 @@ body {
     border: 0px solid;
     position: absolute;
     border-radius: .5rem;
-    background-color: bisque;
+    background-color: #B0C4DE;
     box-shadow: var(--box-shadow);
 }
 
@@ -183,8 +183,9 @@ body {
 
 .header .login-form h3 {
     padding: 1rem;
-    color: orangered;
-    font-size: 1.5rem;
+    color: darkorange;
+    font-weight: bold;
+    font-size: 1.7rem;
     text-transform: uppercase;
     text-decoration: underline;
 }
@@ -218,7 +219,8 @@ body {
     margin: .7rem 0;
     cursor: pointer;
     background: #eee;
-    font-size: 1.1rem;
+    font-weight: bold;
+    font-size: 1.2rem;
     border: 0px solid;
     font-style: italic;
     color: var(--black);
@@ -229,7 +231,7 @@ body {
 
 .header .login-form .btn:hover {
     color: #fff;
-    background: orangered;
+    background: darkorange;
 }
 
 /* --------- Header section ends --------- */
@@ -253,8 +255,8 @@ body {
 }
 
 .card-content h2 {
-    font-size: 3rem;
-    color: orangered;
+    font-size: 3.2rem;
+    color: darkorange;
     padding: 1.7rem 0;
     font-family: 'Brush Script MT', cursive;
 }
@@ -300,7 +302,7 @@ body {
 
 .content a:hover {
     color: #fff;
-    background: orangered;
+    background: #FF8C69;
 }
 
 
@@ -328,7 +330,7 @@ body {
 
 .card-content button:hover {
     color: #fff;
-    background: orangered;
+    background: #FF8C69;
 }
 
 input {
@@ -376,13 +378,13 @@ input {
     background: #fff;
     text-align: center;
     border-radius: .5rem;
-    background-color: bisque;
+    background-color: #B0C4DE;
     box-shadow: var(--box-shadow);
     transition: box-shadow 0.5s ease;
 }
 
 .categories .box-container .box:hover {
-    box-shadow: 1px 1px 10px 4px orangered;
+    box-shadow: 1px 1px 10px 4px black;
 }
 
 
@@ -422,7 +424,7 @@ input {
 
 .categories .box-container .box a:hover {
     color: #fff;
-    background: orangered;
+    background: #FF8C69;
 }
 
 /* -------------- Categories section ends --------------- */
@@ -447,16 +449,17 @@ section {
 .heading span {
     color: #fff;
     padding: .5rem 3rem;
-    background: orangered;
+    background: #FF8C69;
     display: inline-block;
     font-family: Georgia, serif;
     clip-path: polygon(100% 0, 93% 50%, 100% 99%, 0% 100%, 7% 50%, 0% 0%);
 }
 
 .features .box-container {
-    gap: 1.5rem;
+    gap: 2.5rem;
     display: grid;
     border: 0px solid;
+    margin-bottom: 2rem;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
 }
 
@@ -465,18 +468,18 @@ section {
     text-align: center;
     padding: 1rem .5rem;
     border: Opx solid red;
-    background-color: bisque;
+    background-color: #B0C4DE;
     box-shadow: var(--box-shadow);
 }
 
 .features .box-container .box:hover {
-    box-shadow: 1px 1px 10px 4px orangered;
+    box-shadow: 1px 1px 10px 4px black;
 }
 
 .features .box-container .box h3 {
     font-size: 1.7rem;
     font-style: italic;
-    color: var(--green);
+    color: var(--black);
     text-decoration: underline;
 }
 
@@ -506,7 +509,7 @@ section {
 
 .features .box-container .box a:hover {
     color: #fff;
-    background: orangered;
+    background: #FF8C69;
 }
 
 /* -------------- Features section ends --------------- */
@@ -521,7 +524,7 @@ section {
     background: #fff;
     text-align: center;
     flex-direction: column;
-    background-color: bisque;
+    background-color: #B0C4DE;
 }
 
 .footer .box-container {
@@ -587,7 +590,7 @@ section {
 
 .footer .box-container .box .share a:hover {
     color: #fff;
-    background: orangered;
+    background: #FF8C69;
 }
 
 .footer .box-container .box .email {
@@ -617,7 +620,7 @@ section {
 
 .footer .box-container .box .btn:hover {
     color: #fff;
-    background: orangered;
+    background: #FF8C69;
 }
 
 .footer .credit {
@@ -631,9 +634,9 @@ section {
 }
 
 .footer .credit span {
-    color: orangered;
+    color: var(--green);
     font-weight: bold;
-    font-size: 2.7rem;
+    font-size: 2.8rem;
     text-decoration: underline;
     font-family: 'Brush Script MT', cursive;
 }

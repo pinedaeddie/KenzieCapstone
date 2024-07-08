@@ -76,7 +76,7 @@ class UpdateAppointmentPage extends BaseClass {
             appointmentTime
         };
 
-        this.showMessage(`Request successfully submitted for update, please wait..`);
+        this.showMessage(`Request successfully submitted, please wait..`);
         try {
             const updatedAppointment = await this.client.updateAppointmentById(appointmentId, request);
             this.dataStore.set('appointmentRecord', updatedAppointment);
