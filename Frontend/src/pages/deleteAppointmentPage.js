@@ -61,7 +61,7 @@ class DeleteAppointmentPage extends BaseClass {
             return;
         }
 
-        this.showMessage(`Request successfully submitted for deletion, please wait..`);
+        this.showMessage(`Request successfully submitted, please wait..`);
         try {
             const deletedAppointment = await this.client.deleteAppointmentById(appointmentId);
             this.dataStore.set('appointmentRecord', deletedAppointment);

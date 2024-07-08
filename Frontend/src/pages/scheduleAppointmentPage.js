@@ -75,7 +75,7 @@ class ScheduleAppointmentPage extends BaseClass {
             appointmentTime
         };
 
-        this.showMessage(`Request successfully submitted for creation, please wait..`);
+        this.showMessage(`Request successfully submitted, please wait..`);
         try {
             const createdAppointment = await this.client.createAppointment(request, this.errorHandler);
             this.dataStore.set('appointmentRecord', createdAppointment);

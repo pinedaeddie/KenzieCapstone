@@ -27,9 +27,9 @@ public class LambdaService {
 
         if (id == null || id.isEmpty()) {
             throw new InvalidDataException("Booking ID must be provided");
+        } else {
+            return bookingDao.getBookingById(id);
         }
-
-        return bookingDao.getBookingById(id);
     }
 
     public void saveBooking(BookingData bookingData) {
@@ -38,14 +38,11 @@ public class LambdaService {
 
         if (bookingId == null || bookingId.isEmpty()) {
             throw new InvalidDataException("Booking ID must be provided");
-        }
-        if (bookingData.getPatientName() == null) {
+        } else if (bookingData.getPatientName() == null) {
             throw new InvalidDataException("Patient name must be provided");
-        }
-        if (bookingData.getProviderName() == null || bookingData.getProviderName().isEmpty()) {
+        } else if (bookingData.getProviderName() == null || bookingData.getProviderName().isEmpty()) {
             throw new InvalidDataException("Provider name must be provided");
-        }
-        if (bookingData.getGender() == null || bookingData.getGender().isEmpty()) {
+        } else if (bookingData.getGender() == null || bookingData.getGender().isEmpty()) {
             throw new InvalidDataException("Gender must be provided");
         }
 
@@ -66,9 +63,7 @@ public class LambdaService {
 
         if (id == null || id.isEmpty()) {
             throw new InvalidDataException("Request must contain a valid Customer ID");
-        }
-
-        if (bookingData.getPatientName() == null || bookingData.getPatientName().isEmpty()
+        } else if (bookingData.getPatientName() == null || bookingData.getPatientName().isEmpty()
                 || bookingData.getProviderName() == null || bookingData.getProviderName().isEmpty()) {
             throw new InvalidDataException("Booking data must contain patient name and provider name");
         }
@@ -106,7 +101,8 @@ public class LambdaService {
 
         if (bookingId == null || bookingId.isEmpty()) {
             throw new InvalidDataException("Request must contain a valid Booking ID");
+        } else {
+            return bookingDao.deleteBookingById(bookingId);
         }
-        return bookingDao.deleteBookingById(bookingId);
     }
 }
